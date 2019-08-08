@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Home from "./HomeComponent";
-import About from "./AboutComponent";
+//import About from "./AboutComponent";
+import User from "./UserList";
 import Menu from "./MenuComponent";
 import Contact from "./ContactComponent";
 import DishDetail from "./DishdetailComponent";
@@ -22,13 +23,15 @@ import {
   registerUser,
   fetchFavorites,
   postFavorite,
-  deleteFavorite
+  deleteFavorite,
+  fetchUsers
 } from "../redux/ActionCreators";
 import { actions } from "react-redux-form";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 
 const mapStateToProps = state => {
   return {
+    users: state.users,
     info: state.info,
     dishes: state.dishes,
     comments: state.comments,
@@ -57,6 +60,7 @@ const mapDispatchToProps = dispatch => ({
   fetchLeaders: () => dispatch(fetchLeaders()),
   postFeedback: feedback => dispatch(postFeedback(feedback)),
   fetchInfo: username => dispatch(fetchInfo(username)),
+  fetchUsers: () => dispatch(fetchUsers()),
   loginUser: creds => dispatch(loginUser(creds)),
   registerUser: creds => dispatch(registerUser(creds)),
   
@@ -69,7 +73,8 @@ const mapDispatchToProps = dispatch => ({
 class Main extends Component {
   componentDidMount() {    
     this.props.fetchDishes();        
-    this.props.fetchLeaders();            
+    this.props.fetchLeaders();
+    this.props.fetchUsers();            
     if (this.props.auth.user !== null){
       this.props.fetchInfo(this.props.auth.user.username);      
     }
@@ -173,7 +178,7 @@ class Main extends Component {
               <Route
                 exact
                 path="/aboutus"
-                component={() => <About leaders={this.props.leaders} />}
+                component={() => <User users={this.props.users} />}
               />
               } />
               <Route

@@ -23,3 +23,6 @@ export const ADD_FAVORITES = 'ADD_FAVORITES';
 export const INFO_LOADING = 'INFO_LOADING';
 export const INFO_FAILED = 'INFO_FAILED';
 export const ADD_INFO = 'ADD_INFO';
+export const USERS_LOADING = 'USERS_LOADING';
+export const USERS_FAILED = 'USERS_FAILED';
+export const ADD_USERS = 'ADD_USERS';

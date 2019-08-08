@@ -10,10 +10,12 @@ import { Auth } from './auth';
 import thunk from 'redux-thunk';
 import logger from 'redux-logger';
 import { InitialFeedback } from './forms';
+import { Users } from './users';
 
 export const ConfigureStore = () => {
     const store = createStore(
         combineReducers({
+            users: Users,
             info: Info,
             dishes: Dishes,
             comments: Comments,

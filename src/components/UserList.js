@@ -4,29 +4,30 @@ import { Link } from 'react-router-dom';
 import { Loading } from './LoadingComponent';
 import { baseUrl } from '../shared/baseUrl';
 
-    function RenderMenuItem({ dish, onClick }) {
+    function RenderMenuItem({ user, onClick }) {
         return(
             <Card>
-                <Link to={`/menu/${dish._id}`} >
-                    <CardImg width="100%" src={baseUrl + dish.image} alt={dish.name} />
+                <Link to={`/menu/${user._id}`} >
+                    <CardImg width="100%" src={baseUrl + user.profile} alt={user.username} />
                     <CardImgOverlay>
-                        <CardTitle>{dish.name}</CardTitle>
+                        <CardTitle>{user.username}</CardTitle>
                     </CardImgOverlay>
                 </Link>
             </Card>
         );
     }
 
-    const Menu = (props) => {
-        const menu = props.dishes.dishes.map((dish) => {
+    const Users = (props) => {
+
+        const menu = props.users.users.map((user) => {
             return (
-                <div key={dish._id} className="col-12 col-md-5 m-1">
-                    <RenderMenuItem dish={dish} />
+                <div key={user._id} className="col-12 col-md-5 m-1">
+                    <RenderMenuItem user={user} />
                 </div>
             );
         });
 
-        if (props.dishes.isLoading) {
+        if (props.users.isLoading) {
             return(
                 <div className="container">
                     <div className="row">
@@ -35,11 +36,11 @@ import { baseUrl } from '../shared/baseUrl';
                 </div>
             );
         }
-        else if (props.dishes.errMess) {
+        else if (props.users.errMess) {
             return(
                 <div className="container">
                     <div className="row">
-                        <h4>{props.dishes.errMess}</h4>
+                        <h4>{props.users.errMess}</h4>
                     </div>
                 </div>
             );
@@ -64,4 +65,4 @@ import { baseUrl } from '../shared/baseUrl';
             );
     }
 
-export default Menu;
+export default Users;
