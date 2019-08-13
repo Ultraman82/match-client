@@ -8,7 +8,7 @@ import {
   NavItem,
   Jumbotron,
   Button,
-  Modal,
+  Modal,  
   ModalHeader,
   ModalBody,
   Form,
@@ -101,22 +101,22 @@ class Header extends Component {
                 </NavItem>
                 <NavItem>
                   <NavLink className="nav-link" to="/aboutus">
-                    <span className="fa fa-info fa-lg" /> About Us
+                    <span className="fa fa-info fa-lg" /> User List
                   </NavLink>
                 </NavItem>
                 <NavItem>
                   <NavLink className="nav-link" to="/menu">
-                    <span className="fa fa-list fa-lg" /> Menu
+                    <span className="fa fa-list fa-lg" /> People Who Likes you
                   </NavLink>
                 </NavItem>
                 <NavItem>
-                  <NavLink className="nav-link" to="/favorites">
-                    <span className="fa fa-heart fa-lg" /> My Favorites
+                  <NavLink className="nav-link" to="/chat">
+                    <span className="fa fa-heart fa-lg" /> Chat
                   </NavLink>
                 </NavItem>
                 <NavItem>
                   <NavLink className="nav-link" to="/contactus">
-                    <span className="fa fa-address-card fa-lg" /> Contact Us
+                    <span className="fa fa-address-card fa-lg" /> User info
                   </NavLink>
                 </NavItem>
               </Nav>
@@ -159,11 +159,9 @@ class Header extends Component {
           <div className="container">
             <div className="row row-header">
               <div className="col-12 col-sm-6">
-                <h1>Ristorante Con Fusion</h1>
+                <h1>42 Match</h1>
                 <p>
-                  We take inspiration from the World's best cuisines, and create
-                  a unique fusion experience. Our lipsmacking creations will
-                  tickle your culinary senses!
+                  Wanna Have Fun?!
                 </p>
               </div>
             </div>

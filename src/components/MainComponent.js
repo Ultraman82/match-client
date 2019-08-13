@@ -5,9 +5,10 @@ import User from "./UserList";
 import Menu from "./MenuComponent";
 import Contact from "./ContactComponent";
 import DishDetail from "./DishdetailComponent";
-import Favorites from "./FavoriteComponent";
+import Chat from "./Chat";
 import Header from "./HeaderComponent";
 import Footer from "./FooterComponent";
+import LikeList from "./LikeList";
 import { Switch, Route, Redirect, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import {
@@ -24,13 +25,15 @@ import {
   fetchFavorites,
   postFavorite,
   deleteFavorite,
-  fetchUsers
+  fetchUsers,
+  fetchLusers
 } from "../redux/ActionCreators";
 import { actions } from "react-redux-form";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 
 const mapStateToProps = state => {
   return {
+    lusers: state.lusers,
     users: state.users,
     info: state.info,
     dishes: state.dishes,
@@ -65,8 +68,8 @@ const mapDispatchToProps = dispatch => ({
   registerUser: creds => dispatch(registerUser(creds)),
   
   logoutUser: () => dispatch(logoutUser()),
-  fetchFavorites: () => dispatch(fetchFavorites()),
-  postFavorite: dishId => dispatch(postFavorite(dishId)),
+  fetchFavorites: (username) => dispatch(fetchFavorites(username)),
+  postFavorite: users => dispatch(postFavorite(users)),
   deleteFavorite: dishId => dispatch(deleteFavorite(dishId))
 });
 
@@ -77,6 +80,7 @@ class Main extends Component {
     this.props.fetchUsers();            
     if (this.props.auth.user !== null){
       this.props.fetchInfo(this.props.auth.user.username);      
+      this.props.fetchFavorites(this.props.auth.user.username);      
     }
   }
 
@@ -119,7 +123,7 @@ class Main extends Component {
           favorite={this.props.favorites.favorites.dishes.some(
             dish => dish._id === match.params.dishId
           )}
-          postFavorite={this.props.postFavorite}
+          
         />
       ) : (
         <DishDetail
@@ -136,7 +140,7 @@ class Main extends Component {
           commentsErrMess={this.props.comments.errMess}
           postComment={this.props.postComment}
           favorite={false}
-          postFavorite={this.props.postFavorite}
+          //postFavorite={this.props.postFavorite}
         />
       );
     };
@@ -178,25 +182,31 @@ class Main extends Component {
               <Route
                 exact
                 path="/aboutus"
-                component={() => <User users={this.props.users} />}
+                component={() => <User username={this.props.auth.user.username} users={this.props.users.users} postFavorite={this.props.postFavorite}/>}
               />
               } />
               <Route
                 exact
                 path="/menu"
-                component={() => <Menu dishes={this.props.dishes} />}
+                component={() => <LikeList username={this.props.auth.user.username} users={this.props.lusers.lusers} postFavorite={this.props.postFavorite}/>}
               />
-              <Route path="/menu/:dishId" component={DishWithId} />
-              <PrivateRoute
+              {/* <Route path="/menu/:dishId" component={DishWithId} /> */}
+              <Route
                 exact
-                path="/favorites"
+                path="/chat"
                 component={() => (
-                  <Favorites
-                    favorites={this.props.favorites}
-                    deleteFavorite={this.props.deleteFavorite}
+                  <Chat info={this.props.info.info}                   
                   />
                 )}
               />
+              {/* <PrivateRoute
+                exact
+                path="/chat"
+                component={() => (
+                  <Chat                    
+                  />
+                )}
+              /> */}
               <Route
                 exact
                 path="/contactus"

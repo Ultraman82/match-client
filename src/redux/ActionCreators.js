@@ -381,7 +381,7 @@ export const loginUser = creds => dispatch => {
       if (response.success) {        
         localStorage.setItem("token", response.token);
         localStorage.setItem("creds", JSON.stringify(creds));  
-        dispatch(fetchFavorites());
+        //dispatch(fetchFavorites());
         dispatch(receiveLogin(response));
       } else {
         var error = new Error("Error " + response.status);
@@ -462,19 +462,18 @@ export const logoutUser = () => dispatch => {
   window.location.href = 'localhost:3001/home';
 };
 
-export const postFavorite = dishId => dispatch => {
-  const bearer = "Bearer " + localStorage.getItem("token");
-
-  return fetch(baseUrl + "favorites/" + dishId, {
+export const postFavorite = users => dispatch => {
+  //const bearer = "Bearer " + localStorage.getItem("token");  
+  return fetch(baseUrl + "users/add/likedby", {    
     method: "POST",
-    body: JSON.stringify({ _id: dishId }),
+    body: JSON.stringify(users),
     headers: {
       "Content-Type": "application/json",
-      Authorization: bearer
-    },
-    credentials: "same-origin"
+    //Authorization: bearer
+    },    
+    //credentials: "same-origin"
   })
-    .then(
+  .then(
       response => {
         if (response.ok) {
           return response;
@@ -491,17 +490,20 @@ export const postFavorite = dishId => dispatch => {
       }
     )
     .then(response => response.json())
-    .then(favorites => {
-      console.log("Favorite Added", favorites);
-      dispatch(addFavorites(favorites));
+    .then(response => {
+      console.log("Favorite Added", response);      
+      dispatch(addFavorites(response));
     })
-    .catch(error => dispatch(favoritesFailed(error.message)));
+    .catch(error => {
+      dispatch(favoritesFailed(error.message));
+      console.log(error);
+    });
 };
 
-export const deleteFavorite = dishId => dispatch => {
+export const deleteFavorite = users => dispatch => {
   const bearer = "bearer " + localStorage.getItem("token");
 
-  return fetch(baseUrl + "favorites/" + dishId, {
+  return fetch(baseUrl + "favorites/" + users, {
     method: "DELETE",
     headers: {
       Authorization: bearer
@@ -532,16 +534,17 @@ export const deleteFavorite = dishId => dispatch => {
     .catch(error => dispatch(favoritesFailed(error.message)));
 };
 
-export const fetchFavorites = () => dispatch => {
-  dispatch(favoritesLoading(true));
-
-  const bearer = "bearer " + localStorage.getItem("token");
-
-  return fetch(baseUrl + "favorites", {
+export const fetchLusers = (users) => dispatch => {
+  dispatch(lusersLoading(true));
+  //const bearer = "bearer " + localStorage.getItem("token");
+  return fetch(baseUrl + 'users/lusers', {
+    method: "POST",
+    body: JSON.stringify({"users":users}),
     headers: {
-      Authorization: bearer
+      "Content-Type": "application/json",
+    //Authorization: bearer
     }
-  })
+  })      
     .then(
       response => {
         if (response.ok) {
@@ -560,7 +563,54 @@ export const fetchFavorites = () => dispatch => {
       }
     )
     .then(response => response.json())
-    .then(favorites => dispatch(addFavorites(favorites)))
+    .then(lusers => {
+      console.log(lusers);
+      dispatch(addLusers(lusers))}
+      )
+    .catch(error => dispatch(lusersFailed(error.message)));
+};
+
+export const lusersLoading = () => ({
+  type: ActionTypes.LUSERS_LOADING
+});
+
+export const lusersFailed = errmess => ({
+  type: ActionTypes.LUSERS_FAILED,
+  payload: errmess
+});
+
+export const addLusers = lusers => ({
+  type: ActionTypes.ADD_LUSERS,
+  payload: lusers
+});
+
+export const fetchFavorites = (username) => dispatch => {
+  dispatch(favoritesLoading(true));
+  //const bearer = "bearer " + localStorage.getItem("token");
+  return fetch(baseUrl + `users/${username}/likedby`)      
+    .then(
+      response => {
+        if (response.ok) {
+          return response;
+        } else {
+          var error = new Error(
+            "Error " + response.status + ": " + response.statusText
+          );
+          error.response = response;
+          throw error;
+        }
+      },
+      error => {
+        var errmess = new Error(error.message);
+        throw errmess;
+      }
+    )
+    .then(response => response.json())
+    .then(likedby => {
+      console.log("likedby at action creator:" + likedby);
+      dispatch(fetchLusers(likedby));
+      dispatch(addFavorites(likedby))}
+      )
     .catch(error => dispatch(favoritesFailed(error.message)));
 };
 
@@ -577,3 +627,4 @@ export const addFavorites = favorites => ({
   type: ActionTypes.ADD_FAVORITES,
   payload: favorites
 });
+

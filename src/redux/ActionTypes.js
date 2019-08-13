@@ -26,3 +26,9 @@ export const ADD_INFO = 'ADD_INFO';
 export const USERS_LOADING = 'USERS_LOADING';
 export const USERS_FAILED = 'USERS_FAILED';
 export const ADD_USERS = 'ADD_USERS';
+
+export const LUSERS_LOADING = 'LUSERS_LOADING';
+export const LUSERS_FAILED = 'LUSERS_FAILED';
+export const ADD_LUSERS = 'ADD_LUSERS';
+
+

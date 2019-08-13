@@ -29,7 +29,7 @@ import { baseUrl } from '../shared/baseUrl';
     }
 
     const Users = (props) => {
-        //console.log("props in Users:" + props.postFavorite);
+        console.log("props in Users:" + JSON.stringify(props));
         const menu = props.users.map((user) => {
             return (
                 <div key={user._id} className="col-12 col-md-3 m-1">

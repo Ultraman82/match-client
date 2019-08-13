@@ -21,7 +21,7 @@ import { Control, LocalForm } from "react-redux-form";
 import { Loading } from "./LoadingComponent";
 import { baseUrl } from "../shared/baseUrl";
 import { FadeTransform, Fade, Stagger } from "react-animation-components";
-
+  
 function RenderDish({ dish, favorite, postFavorite }) {
   return (
     <div className="col-12 col-md-5 m-1">
