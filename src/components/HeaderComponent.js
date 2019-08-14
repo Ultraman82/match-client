@@ -18,12 +18,13 @@ import {
 } from "reactstrap";
 import { NavLink } from "react-router-dom";
 import io from 'socket.io-client';
-const noti = io('https://localhost:3443/noti');
+//const noti = io('https://localhost:3443/noti');
 
 class Header extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      username: null,
       isNavOpen: false,
       isModalOpen: false,
       isSignupOpen: false,
@@ -41,16 +42,15 @@ class Header extends Component {
   componentDidUpdate() {
     if(this.props.auth.isAuthenticated)
     {
-      let str = this.props.auth.user.username      
-      noti.on(str, (data) => {            
+      let str = this.props.auth.user.username;      
+      /* noti.on(str, (data) => {            
         console.log("getting data:" + JSON.stringify(data));
         this.setState({message: this.state.noti.concat(data), notin:this.state.notin + 1});                                
-      });      
-    }    
-    /* noti.on("test2", (data) => {            
-      console.log("getting data:" + JSON.stringify(data));
-      this.setState({message: this.state.noti.concat(data), notin:this.state.notin + 1});                                
-    }); */
+      }); */
+    }        
+  }
+  componentWillUnmount() {    
+    //noti.removeAllListeners(str);    
   }
 
   toggleNav() {

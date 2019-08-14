@@ -1,6 +1,11 @@
 import * as ActionTypes from "./ActionTypes";
 import { baseUrl } from "../shared/baseUrl";
+import io from 'socket.io-client';
+const noti = io('https://localhost:3443/noti');
 
+/* startListen = (username) ={
+
+} */
 export const addComment = comment => ({
   type: ActionTypes.ADD_COMMENT,
   payload: comment
@@ -381,6 +386,10 @@ export const loginUser = creds => dispatch => {
       if (response.success) {        
         localStorage.setItem("token", response.token);
         localStorage.setItem("creds", JSON.stringify(creds));  
+        let str = creds.username;      
+        noti.on(str, (data) => {            
+          console.log("getting data:" + JSON.stringify(data));          
+        });
         //dispatch(fetchFavorites());
         dispatch(receiveLogin(response));
       } else {
@@ -454,11 +463,14 @@ export const receiveLogout = () => {
 // Logs the user out
 export const logoutUser = () => dispatch => {
   dispatch(requestLogout());
+  //noti.reremoveAllListeners(JSON.parse(localStorage.getItem('creds')).username);
+  noti.removeAllListeners();
   localStorage.removeItem("token");
   localStorage.removeItem("creds");
   dispatch(favoritesFailed("Error 401: Unauthorized"));
   dispatch(receiveLogout());
   dispatch(addInfo());  
+
   window.location.href = 'localhost:3001/home';
 };
 
