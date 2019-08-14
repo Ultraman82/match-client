@@ -17,6 +17,8 @@ import {
   Label
 } from "reactstrap";
 import { NavLink } from "react-router-dom";
+import io from 'socket.io-client';
+const noti = io('https://localhost:3443/noti');
 
 class Header extends Component {
   constructor(props) {
@@ -24,7 +26,9 @@ class Header extends Component {
     this.state = {
       isNavOpen: false,
       isModalOpen: false,
-      isSignupOpen: false
+      isSignupOpen: false,
+      noti: [],
+      notin: 0
     };
     this.toggleNav = this.toggleNav.bind(this);
     this.toggleModal = this.toggleModal.bind(this);
@@ -32,6 +36,21 @@ class Header extends Component {
     this.handleSignup = this.handleSignup.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
+  }
+  
+  componentDidUpdate() {
+    if(this.props.auth.isAuthenticated)
+    {
+      let str = this.props.auth.user.username      
+      noti.on(str, (data) => {            
+        console.log("getting data:" + JSON.stringify(data));
+        this.setState({message: this.state.noti.concat(data), notin:this.state.notin + 1});                                
+      });      
+    }    
+    /* noti.on("test2", (data) => {            
+      console.log("getting data:" + JSON.stringify(data));
+      this.setState({message: this.state.noti.concat(data), notin:this.state.notin + 1});                                
+    }); */
   }
 
   toggleNav() {

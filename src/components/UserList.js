@@ -19,7 +19,7 @@ import { baseUrl } from '../shared/baseUrl';
                     </CardImgOverlay>*/}
                 <CardBody>
                     <CardText>{user.username}</CardText>
-                    <Button color="primary" size="sm" outline>Chat</Button>{' '}
+                    <Button color="primary" size="sm" outline>Profile</Button>{' '}
                     <Button color="danger" size="sm" outline onClick={() => postFavorite({"user": username, "data": user.username})}>Like</Button>                    
                 </CardBody>
                     

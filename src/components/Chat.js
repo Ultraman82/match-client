@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { Media, Breadcrumb, BreadcrumbItem, Button } from 'reactstrap';
-import io from 'socket.io-client';
+
 import { Link } from 'react-router-dom';
 import { baseUrl } from '../shared/baseUrl';
 import { Loading } from './LoadingComponent';
-
+import io from 'socket.io-client';
 //const socket = io('http://localhost:3000');
 const chat = io('https://localhost:3443/chat');
+const noti = io('https://localhost:3443/noti');
 
 
 function Message({ dish, deleteFavorite }) {
@@ -27,8 +28,7 @@ function Message({ dish, deleteFavorite }) {
 }
 
 
-export default class Chat extends Component {
-    
+export default class Chat extends Component {    
     constructor(props) {
         super(props);
         this.state = { 
@@ -42,14 +42,17 @@ export default class Chat extends Component {
       }    
       
       componentDidMount() {
-        chat.on('test1', (data) => {            
+        /* chat.on('test1', (data) => {            
+            console.log("getting data:" + JSON.stringify(data));
+            this.setState({message: this.state.message.concat(data), count:this.state.count + 1});                                 */
+        noti.on('test2', (data) => {            
             console.log("getting data:" + JSON.stringify(data));
             this.setState({message: this.state.message.concat(data), count:this.state.count + 1});                                
         });
       }
 
       increment (e) {
-        chat.emit('message', ["test1", "test2", "Hello"]);        
+        noti.emit('message', ["test1", "test2", "Hello"]);        
         console.log(JSON.stringify(this.state));
         e.preventDefault();
       }
