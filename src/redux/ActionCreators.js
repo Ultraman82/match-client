@@ -390,7 +390,7 @@ export const loginUser = creds => dispatch => {
         noti.on(str, (data) => {            
           console.log("getting data:" + JSON.stringify(data));          
         });
-        //dispatch(fetchFavorites());
+        dispatch(fetchFavorites());
         dispatch(receiveLogin(response));
       } else {
         var error = new Error("Error " + response.status);
