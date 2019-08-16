@@ -20,7 +20,7 @@ import { baseUrl } from '../shared/baseUrl';
                 <CardBody>
                     <CardText>{user.username}</CardText>
                     <Button color="primary" size="sm" outline>Profile</Button>{' '}
-                    <Button color="danger" size="sm" outline onClick={() => postFavorite({"user": user.username, "data":username })}>Like</Button>                    
+                    <Button color="danger" size="sm" outline onClick={() => postFavorite({"user": user.username, "data":username, "connected":true })}>Like</Button>                    
                 </CardBody>
                     
                 </Card>
