@@ -18,7 +18,7 @@ import {
 } from "reactstrap";
 import { NavLink } from "react-router-dom";
 import io from 'socket.io-client';
-//const noti = io('https://localhost:3443/noti');
+const noti = io('https://localhost:3443/noti');
 
 class Header extends Component {
   constructor(props) {
@@ -39,14 +39,14 @@ class Header extends Component {
     this.handleLogout = this.handleLogout.bind(this);
   }
   
-  componentDidUpdate() {
+  componentDidMount() {
     if(this.props.auth.isAuthenticated)
     {
       let str = this.props.auth.user.username;      
-      /* noti.on(str, (data) => {            
+      noti.on(str, (data) => {            
         console.log("getting data:" + JSON.stringify(data));
         this.setState({message: this.state.noti.concat(data), notin:this.state.notin + 1});                                
-      }); */
+      });
     }        
   }
   componentWillUnmount() {    
@@ -93,6 +93,7 @@ class Header extends Component {
   }
 
   handleLogout() {
+    noti.removeAllListeners();
     this.props.logoutUser();
   }
 

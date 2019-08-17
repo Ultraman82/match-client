@@ -386,10 +386,10 @@ export const loginUser = creds => dispatch => {
       if (response.success) {        
         localStorage.setItem("token", response.token);
         localStorage.setItem("creds", JSON.stringify(creds));  
-        let str = creds.username;      
+        /* let str = creds.username;      
         noti.on(str, (data) => {            
           console.log("getting data:" + JSON.stringify(data));          
-        });
+        }); */
         dispatch(fetchFavorites());
         dispatch(receiveLogin(response));
       } else {
@@ -464,13 +464,12 @@ export const receiveLogout = () => {
 export const logoutUser = () => dispatch => {
   dispatch(requestLogout());
   //noti.reremoveAllListeners(JSON.parse(localStorage.getItem('creds')).username);
-  noti.removeAllListeners();
+  //noti.removeAllListeners();
   localStorage.removeItem("token");
   localStorage.removeItem("creds");
   dispatch(favoritesFailed("Error 401: Unauthorized"));
   dispatch(receiveLogout());
-  dispatch(addInfo());  
-
+  dispatch(addInfo());
   window.location.href = 'localhost:3001/home';
 };
 

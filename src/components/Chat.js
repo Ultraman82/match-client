@@ -10,7 +10,7 @@ const chat = io('https://localhost:3443/chat');
 const noti = io('https://localhost:3443/noti');
 
 
-function Message({ dish, deleteFavorite }) {
+function ChatRoom({ dish, deleteFavorite }) {
     return(
         <Media tag="li">
             <Media left middle>
@@ -52,24 +52,17 @@ export default class Chat extends Component {
       }
 
       increment (e) {
-        noti.emit('message', ["test1", "test2", "Hello"]);        
-        console.log(JSON.stringify(this.state));
+        /* noti.emit('message', ["test1", "test2", "Hello"]);        
+        console.log(JSON.stringify(this.state)); */
         e.preventDefault();
       }
       addMessage () {
           //this.setState({message: this.state.message.concat("d")});          
       }      
 
-    render() {
-        
+    render() {        
         return (
-            <div>
-                <ul>
-                </ul>                
-                {this.state.message}
-                <input></input>
-                <button onClick={this.addMessage}>Add Message</button>
-                <button onClick={this.increment}>Increment</button>
+            <div>        
             </div>
         )
     }
