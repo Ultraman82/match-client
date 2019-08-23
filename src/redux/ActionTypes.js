@@ -31,4 +31,10 @@ export const LUSERS_LOADING = 'LUSERS_LOADING';
 export const LUSERS_FAILED = 'LUSERS_FAILED';
 export const ADD_LUSERS = 'ADD_LUSERS';
 
+export const NOTIES_LOADING = 'NOTIES_LOADING';
+export const NOTIES_FAILED = 'NOTIES_FAILED';
+export const ADD_NOTIES = 'ADD_NOTIES';
 
+export const PROFILE_LOADING = 'PROFILE_LOADING';
+export const PROFILE_FAILED = 'PROFILE_FAILED';
+export const ADD_PROFILE = 'ADD_PROFILE';

@@ -5,6 +5,8 @@ import { Info } from './info';
 import { Comments } from './comments';
 import { Promotions } from './promotions';
 import { Leaders } from './leaders';
+import { Noties } from './noties';
+import { Profile } from './profile';
 import { Favorites } from './favorites';
 import { Lusers } from './lusers'
 import { Auth } from './auth';
@@ -16,6 +18,8 @@ import { Users } from './users';
 export const ConfigureStore = () => {
     const store = createStore(
         combineReducers({
+            profile: Profile,
+            noties: Noties,
             users: Users,
             lusers: Lusers,
             info: Info,

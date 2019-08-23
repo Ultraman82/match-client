@@ -1,79 +1,182 @@
-import React from 'react';
-import { Card, CardImg, CardImgOverlay, CardTitle, CardBody, CardSubtitle, CardText, Button, Breadcrumb, BreadcrumbItem, CardHeader } from 'reactstrap';
-import { Link } from 'react-router-dom';
-import { Loading } from './LoadingComponent';
-import { baseUrl } from '../shared/baseUrl';
+import React, { Component } from "react";
+import Profile from "./Profile";
+import {
+  Card,
+  CardImg,
+  CardImgOverlay,
+  CardTitle,
+  CardBody,
+  CardSubtitle,
+  CardText,
+  Button,
+  CardHeader,
+  Modal,
+  ModalHeader
+} from "reactstrap";
+import { Link } from "react-router-dom";
+import { Loading } from "./LoadingComponent";
+import { baseUrl } from "../shared/baseUrl";
 
+class RenderUser extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isModalOpen: false
+    };
+    this.toggleModal = this.toggleModal.bind(this);
+  }
 
-    function RenderUser({ user, postFavorite, username }) {
-        return(
-            <div>
-                <Card>
-                {/* <Link to={`/profile/${user._id}`} > */}
-                <CardImg width="100%" src={baseUrl + user.profile} alt={user.username} />
-                    {/* <div className="card-img-overlay" style={{display:"flex"}}>                        
-                        <span className="align-text-bottom" style={{alignSelf:"flex-end"}}>text-bottom</span>
-                    </div> */}
-                    {/* <CardImgOverlay className="d-flex flex-column justify-content-end">                    
-                    <CardText>{user.username}</CardText>
-                    </CardImgOverlay>*/}
-                <CardBody>
-                    <CardText>{user.username}</CardText>
-                    <Button color="primary" size="sm" outline>Profile</Button>{' '}
-                    <Button color="danger" size="sm" outline onClick={() => postFavorite({"user": username, "data": user.username})}>Like</Button>                    
-                </CardBody>
-                    
-                </Card>
+  toggleModal() {
+    this.setState({
+      isModalOpen: !this.state.isModalOpen
+    });
+  }
+
+  render() {
+    return (
+      <div>
+        <Card>
+          <CardImg
+            className="mouseover"
+            width="100%"
+            src={baseUrl + this.props.user.profile}
+            alt={this.props.user.username}
+            onClick={e => {
+              e.preventDefault();
+              this.toggleModal();
+            }}
+          />
+          <CardBody>
+            <CardText className="row justify-content-center">
+              <div className="col-auto">{this.props.user.username}</div>
+              <span
+                onClick={e => {
+                  e.preventDefault();
+                  alert(
+                    `We sent message to ${
+                      this.props.user.username
+                    }. Lets see you would be liked!`
+                  );
+                  this.props.postFavorite([
+                    this.props.username,
+                    this.props.user.username
+                  ]);
+                }}
+                className="col-auto fa fa-heart fa-lg mouseover"
+                style={{ color: "#E91E63" }}
+              />
+              <span className="col-auto fa fa-close fa-lg mouseover" />
+            </CardText>
+          </CardBody>
+        </Card>
+        <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
+          <ModalHeader toggle={this.toggleModal}>Profile</ModalHeader>
+          <Profile
+            profile={this.props.user}
+            postFavorite={this.props.postFavorite}
+          />
+        </Modal>
+      </div>
+    );
+  }
+}
+
+/* function RenderUser({ user, postFavorite, username }) {
+  return (
+    <div>
+      <Card>
+        <CardImg
+          width="100%"
+          src={baseUrl + user.profile}
+          alt={user.username}
+        />
+        <CardBody>
+          <CardText className="row justify-content-center">
+            <div className="col-auto">{user.username}</div>
+            <span
+              className="col-auto fa fa-address-card fa-lg"
+              style={{ color: "#6A1B9A" }}
+            />
+            <span
+              onClick={e => {
+                e.preventDefault();
+                postFavorite([username, user.username]);
+              }}
+              className="col-auto fa fa-heart fa-lg"
+              style={{ color: "#E91E63" }}
+            />
+            <span className="col-auto fa fa-close fa-lg dislike" />
+          </CardText>
+        </CardBody>
+      </Card>
+    </div>
+  );
+} */
+
+const Users = props => {
+  //console.log("props in Users:" + props.postFavorite);
+  const userlist = props.users.map(user => {
+    return (
+      /* <div key={user._id} className="col-12 col-md-3 m-1">
+      <div key={user._id} className="col-9 mx-auto col-md-6 col-lg-3 my-1">*/
+      <div key={user._id} className="col-9 mx-auto col-md-6 col-lg-4 my-1">
+        <RenderUser
+          user={user}
+          postFavorite={props.postFavorite}
+          username={props.username}
+        />
+      </div>
+    );
+  });
+
+  if (props.users.isLoading) {
+    return (
+      <div className="container">
+        <div className="row">
+          <Loading />
+        </div>
+      </div>
+    );
+  } else if (props.users.errMess) {
+    return (
+      <div className="container">
+        <div className="row">
+          <h4>{props.users.errMess}</h4>
+        </div>
+      </div>
+    );
+  } else
+    return (
+      <div className="container">
+        <div className="interactions">
+          <div className="search-container">
+            <select>
+              <option selected>Filter By</option>
+              <option value="1">One</option>
+              <option value="2">Two</option>
+              <option value="3">Three</option>
+            </select>
+            <div className="md-form mt-0">
+              <input
+                className="form-control"
+                type="text"
+                placeholder="Search"
+                aria-label="Search"
+              />
             </div>
-        );
-    }
-
-    const Users = (props) => {
-        //console.log("props in Users:" + props.postFavorite);
-        const menu = props.users.map((user) => {
-            return (
-                <div key={user._id} className="col-12 col-md-3 m-1">
-                    <RenderUser user={user} postFavorite={props.postFavorite} username={props.username}/>
-                </div>
-            );
-        });
-
-        if (props.users.isLoading) {
-            return(
-                <div className="container">
-                    <div className="row">
-                        <Loading />
-                    </div>
-                </div>
-            );
-        }
-        else if (props.users.errMess) {
-            return(
-                <div className="container">
-                    <div className="row">
-                        <h4>{props.users.errMess}</h4>
-                    </div>
-                </div>
-            );
-        }
-        else
-            return (
-                <div className="container">
-                    <div className="row">
-                        <Breadcrumb>
-                            <BreadcrumbItem><Link to='/home'>Home</Link></BreadcrumbItem>
-                            <BreadcrumbItem active>Menu</BreadcrumbItem>
-                        </Breadcrumb>
-                        <div className="col-12">
-                            <h3>Menu</h3>
-                            <hr />
-                        </div>
-                    </div>
-                    <div className="row">
-                        {menu}
-                    </div>
-                </div>
-            );
-    }
+          </div>
+          <div className="select-container">
+            <select>
+              <option selected>Sort By</option>
+              <option value="1">One</option>
+              <option value="2">Two</option>
+              <option value="3">Three</option>
+            </select>
+          </div>
+        </div>
+        <div className="row">{userlist}</div>
+      </div>
+    );
+};
 
 export default Users;

@@ -8,7 +8,7 @@ import {
   NavItem,
   Jumbotron,
   Button,
-  Modal,  
+  Modal,
   ModalHeader,
   ModalBody,
   Form,
@@ -17,8 +17,8 @@ import {
   Label
 } from "reactstrap";
 import { NavLink } from "react-router-dom";
-import io from 'socket.io-client';
-const noti = io('https://localhost:3443/noti');
+import io from "socket.io-client";
+const noti = io("https://localhost:3443/noti");
 
 class Header extends Component {
   constructor(props) {
@@ -28,8 +28,7 @@ class Header extends Component {
       isNavOpen: false,
       isModalOpen: false,
       isSignupOpen: false,
-      noti: [],
-      notin: 0
+      newNoti: 0
     };
     this.toggleNav = this.toggleNav.bind(this);
     this.toggleModal = this.toggleModal.bind(this);
@@ -38,19 +37,15 @@ class Header extends Component {
     this.handleLogin = this.handleLogin.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
   }
-  
+
   componentDidMount() {
-    if(this.props.auth.isAuthenticated)
-    {
-      let str = this.props.auth.user.username;      
-      noti.on(str, (data) => {            
-        console.log("getting data:" + JSON.stringify(data));
-        this.setState({message: this.state.noti.concat(data), notin:this.state.notin + 1});                                
+    if (this.props.auth.isAuthenticated) {
+      let str = this.props.auth.user.username;
+      noti.on(str, data => {
+        console.log("noti:" + data);
+        this.props.fetchNoties(JSON.parse(localStorage.creds).username);
       });
-    }        
-  }
-  componentWillUnmount() {    
-    //noti.removeAllListeners(str);    
+    }
   }
 
   toggleNav() {
@@ -99,7 +94,7 @@ class Header extends Component {
 
   render() {
     return (
-      <React.Fragment>              
+      <React.Fragment>
         {/* <Navbar dark expand="md"> */}
         <Navbar dark expand="md">
           <div className="container">
@@ -121,17 +116,20 @@ class Header extends Component {
                 </NavItem>
                 <NavItem>
                   <NavLink className="nav-link" to="/aboutus">
-                    <span className="fa fa-info fa-lg" /> User List
+                    <span className="fa fa-list fa-lg" /> User List
                   </NavLink>
                 </NavItem>
                 <NavItem>
                   <NavLink className="nav-link" to="/menu">
-                    <span className="fa fa-list fa-lg" /> People Who Likes you
+                    <span className="fa fa-heart fa-lg" /> Connected
                   </NavLink>
                 </NavItem>
                 <NavItem>
                   <NavLink className="nav-link" to="/chat">
-                    <span className="fa fa-heart fa-lg" /> Chat
+                    <span className="fa fa-bell fa-lg" /> Notifications
+                    <span className="badge badge-danger">
+                      {this.props.unread !== 0 ? this.props.unread : ""}
+                    </span>
                   </NavLink>
                 </NavItem>
                 <NavItem>
@@ -144,18 +142,18 @@ class Header extends Component {
                 <NavItem>
                   {!this.props.auth.isAuthenticated ? (
                     <div>
-                    <Button outline onClick={this.toggleModal}>
-                      <span className="fa fa-sign-in fa-lg" /> Login
-                      {this.props.auth.isFetching ? (
-                        <span className="fa fa-spinner fa-pulse fa-fw" />
-                      ) : null}
-                    </Button>
-                    <Button outline onClick={this.toggleSignup}>
-                      <span className="fa fa-sign-in fa-lg" /> Signup
-                      {this.props.auth.isFetching ? (
-                        <span className="fa fa-spinner fa-pulse fa-fw" />
-                      ) : null}
-                    </Button>
+                      <Button outline onClick={this.toggleModal}>
+                        <span className="fa fa-sign-in fa-lg" /> Login
+                        {this.props.auth.isFetching ? (
+                          <span className="fa fa-spinner fa-pulse fa-fw" />
+                        ) : null}
+                      </Button>
+                      <Button outline onClick={this.toggleSignup}>
+                        <span className="fa fa-sign-in fa-lg" /> Signup
+                        {this.props.auth.isFetching ? (
+                          <span className="fa fa-spinner fa-pulse fa-fw" />
+                        ) : null}
+                      </Button>
                     </div>
                   ) : (
                     <div>
@@ -180,9 +178,7 @@ class Header extends Component {
             <div className="row row-header">
               <div className="col-12 col-sm-6">
                 <h1>42 Match</h1>
-                <p>
-                  Wanna Have Fun?!
-                </p>
+                <p>Wanna Have Fun?!</p>
               </div>
             </div>
           </div>
@@ -237,7 +233,7 @@ class Header extends Component {
                   name="username"
                   innerRef={input => (this.username = input)}
                 />
-              </FormGroup>              
+              </FormGroup>
               <FormGroup>
                 <Label htmlFor="password">Password</Label>
                 <Input
@@ -255,7 +251,7 @@ class Header extends Component {
                   name="fisrtname"
                   innerRef={input => (this.firstname = input)}
                 />
-              </FormGroup>              
+              </FormGroup>
               <FormGroup>
                 <Label htmlFor="username">Last name</Label>
                 <Input
@@ -264,16 +260,16 @@ class Header extends Component {
                   name="lastname"
                   innerRef={input => (this.lastname = input)}
                 />
-              </FormGroup>  
+              </FormGroup>
               <FormGroup>
-                <Label htmlFor="username">Last name</Label>
+                <Label htmlFor="username">email</Label>
                 <Input
                   type="email"
                   id="email"
                   name="email"
                   innerRef={input => (this.email = input)}
                 />
-              </FormGroup>  
+              </FormGroup>
               <Button type="submit" value="submit" color="primary">
                 Signup
               </Button>

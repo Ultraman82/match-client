@@ -57,7 +57,7 @@ import { baseUrl } from '../shared/baseUrl';
                             <hr />
                         </div>
                     </div>
-                    <div className="row">
+                    <div className="interactions">
                         {menu}
                     </div>
                 </div>

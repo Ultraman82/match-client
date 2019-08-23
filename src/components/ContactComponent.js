@@ -23,24 +23,16 @@ const validEmail = val => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(val);
 class Contact extends Component {
   constructor(props) {
     super(props);
-    this.state = { cSelected: [],
+    this.state = {
       username: this.props.username,
-      firstname: "",
-      lastname: "",      
-      gender: "",
-      prefer: "",
-      email: "",
-      gps: "",
-      biography: "",
-      tags:""
-     };
-    this.ongenderBtnClick = this.ongenderBtnClick.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+      tags: {}
+    };
+    this.tagClick = this.tagClick.bind(this);
   }
 
-  componentWillMount() {                
+  componentWillMount() {
     //console.log("fetchInfo:" + this.props.fetchInfo + "\nUsername: " + this.props.username, "\nifno:" + this.props.info);
-    
+
     //console.log(JSON.stringify(this.props.fetchInfo(this.props.username)));
     //console.log("aa" + aa);
     /* if(this.props.info !== null) {
@@ -50,26 +42,40 @@ class Contact extends Component {
       ...this.props.info
     });
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(position => {this.setState({gps:position.coords.latitude + "," + position.coords.longitude})});
-    } else { 
+      navigator.geolocation.getCurrentPosition(position => {
+        this.setState({
+          gps: position.coords.latitude + "," + position.coords.longitude
+        });
+      });
+    } else {
       alert("Geolocation is not supported by this browser.");
     }
   }
-  
-  ongenderBtnClick(gender) {
-    this.setState({ gender });    
+
+  tagClick(tag) {
+    this.setState({
+      tags: { ...this.state.tags, [tag]: !this.state.tags[tag] }
+    });
   }
 
-  onPreferClick(prefer) {
-    console.log(JSON.stringify(this.state));
-    this.setState({ prefer });
+  handleSubmit(values) {
+    console.log(values);
+    this.props.postFeedback({
+      ...values,
+      tags: this.state.tags,
+      username: this.props.info.username,
+      gps: this.state.gps
+    });
+    //this.props.resetFeedbackForm();
   }
 
-  handleSubmit(values) {        
-    this.props.postFeedback({...values, username:this.props.info.username, gps:this.state.gps});
-    this.props.resetFeedbackForm();
-  }
-/* 
+  /* renderTags() {
+    Object.keys(this.state.tags).map(tag => {
+      console.log(tag);
+      return <p>{tag}</p>;
+    });
+  } */
+  /* 
   onCheckboxBtnClick(selected) {
     const index = this.state.cSelected.indexOf(selected);
     if (index < 0) {
@@ -80,21 +86,24 @@ class Contact extends Component {
     this.setState({ cSelected: [...this.state.cSelected] });
   } */
 
-  render() {    
+  render() {
+    const renderTags = Object.keys(this.state.tags).map(tag => {
+      return (
+        <Button
+          className="col-sm-2"
+          outline
+          color="primary"
+          active={this.state.tags[tag]}
+          onClick={() => {
+            this.tagClick(tag);
+          }}
+        >
+          {tag}
+        </Button>
+      );
+    });
     return (
       <div className="container">
-        <div className="row">
-          <Breadcrumb>
-            <BreadcrumbItem>
-              <Link to="/home">Home</Link>
-            </BreadcrumbItem>
-            <BreadcrumbItem active>Dashboard</BreadcrumbItem>
-          </Breadcrumb>
-          <div className="col-12">
-            <h3>Dashboard</h3>
-            <hr />
-          </div>
-        </div>        
         <div className="row row-content">
           <div className="col-12">
             <h3>Edit your Info</h3>
@@ -145,50 +154,76 @@ class Contact extends Component {
                     name="lastname"
                     placeholder="Last Name"
                     className="form-control"
-                    defaultValue={this.state.lastname}                    
+                    defaultValue={this.state.lastname}
                   />
                 </Col>
-              </Row>              
+              </Row>
               <Row>
-              <Label htmlFor="preference" md={2}>
-                Gender
-                </Label>                      
+                <Label htmlFor="gender" md={2}>
+                  Gender
+                </Label>
                 <Col md={10}>
-                <ButtonGroup>                  
-                  <Button outline size="sm" color="primary" onClick={() => this.ongenderBtnClick("male")} active={this.state.gender === "male"}>Male</Button>
-                  <Button outline size="sm" color="primary" onClick={() => this.ongenderBtnClick("female")} active={this.state.gender === "female"}>Female</Button>
-                </ButtonGroup>
-                <p>Selected: {this.state.gender}</p>
+                  <label>
+                    <Control.radio
+                      model=".gender"
+                      value="male"
+                      checked={this.state.gender === "male"}
+                    />{" "}
+                    Male
+                  </label>
+                  <label>
+                    <Control.radio
+                      model=".gender"
+                      value="female"
+                      checked={this.state.gender === "female"}
+                    />{" "}
+                    Female
+                  </label>
                 </Col>
               </Row>
               <Row>
-              <Label htmlFor="preference" md={2}>
-                Preference
-                </Label>     
+                <Label htmlFor="prefer" md={2}>
+                  Preference
+                </Label>
                 <Col md={10}>
-                <ButtonGroup>
-                  <Button outline size="sm" color="primary" onClick={() => this.onPreferClick("by")} active={this.state.prefer === "by"}>By Sexual</Button>
-                  <Button outline size="sm" color="primary" onClick={() => this.onPreferClick("male")} active={this.state.prefer === "male"}>Male</Button>
-                  <Button outline size="sm" color="primary" onClick={() => this.onPreferClick("female")} active={this.state.prefer === "female"}>Female</Button>
-                </ButtonGroup>
-                <p>Selected: {this.state.prefer}</p>
-                  </Col>                 
+                  <Control.select
+                    model=".prefer"
+                    id="prefer"
+                    name="prefer"
+                    defaultValue={this.state.prefer}
+                    className="form-control"
+                  >
+                    <option value="" />
+                    <option value="male">male</option>
+                    <option value="female">female</option>
+                    <option value="by">By Sexual</option>
+                  </Control.select>
+                  {/* onClick={() => this.onPreferClick("by")}
+                  active={this.state.prefer === "by"} */}
+                </Col>
               </Row>
-              <Row className="form-group">
+              <Row>
                 <Label htmlFor="tags" md={2}>
-                  Contact Tel.
+                  Tags
+                </Label>
+                <Col md={10}>{renderTags}</Col>
+              </Row>
+
+              {/* <Row className="form-group">
+                <Label htmlFor="tags" md={2}>
+                  Interests
                 </Label>
                 <Col md={10}>
                   <Control.text
                     model=".tags"
                     id="tags"
-                    name="tags"                
+                    name="tags"
                     placeholder="Tags with #"
                     defaultValue={this.state.tags}
-                    className="form-control"                    
-                  />                  
+                    className="form-control"
+                  />
                 </Col>
-              </Row>
+              </Row> */}
               {/* <Row className="form-group">
                 <Label htmlFor="tags" md={2}>
                   Contact Tel.
@@ -295,7 +330,10 @@ class Contact extends Component {
                 </Col>
               </Row>
               {/* <Upload gallery={this.props.info.gallery !== [] ? this.props.info.gallery:null}/> */}
-              <Upload gallery={this.props.info.gallery} username={this.props.info.username}/>
+              <Upload
+                gallery={this.props.info.gallery}
+                username={this.props.info.username}
+              />
             </Form>
           </div>
         </div>

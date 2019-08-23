@@ -1,7 +1,7 @@
 import * as ActionTypes from "./ActionTypes";
 import { baseUrl } from "../shared/baseUrl";
-import io from 'socket.io-client';
-const noti = io('https://localhost:3443/noti');
+import io from "socket.io-client";
+const noti = io("https://localhost:3443/noti");
 
 /* startListen = (username) ={
 
@@ -54,46 +54,6 @@ export const postComment = (dishId, rating, comment) => dispatch => {
       alert("Your comment could not be posted\nError: " + error.message);
     });
 };
-//dishes
-export const fetchDishes = () => dispatch => {
-  dispatch(dishesLoading(true));
-  return fetch(baseUrl + "dishes")
-    .then(
-      response => {
-        if (response.ok) {
-          return response;
-        } else {
-          var error = new Error(
-            "Error " + response.status + ": " + response.statusText
-          );
-          error.response = response;
-          throw error;
-        }
-      },
-      error => {
-        var errmess = new Error(error.message);
-        throw errmess;
-      }
-    )
-    .then(response => response.json())
-    .then(dishes => dispatch(addDishes(dishes)))
-    .catch(error => dispatch(dishesFailed(error.message)));
-};
-
-export const dishesLoading = () => ({
-  type: ActionTypes.DISHES_LOADING
-});
-
-export const dishesFailed = errmess => ({
-  type: ActionTypes.DISHES_FAILED,
-  payload: errmess
-});
-
-export const addDishes = dishes => ({
-  type: ActionTypes.ADD_DISHES,
-  payload: dishes
-});
-
 //users
 export const fetchUsers = () => dispatch => {
   dispatch(usersLoading(true));
@@ -136,29 +96,34 @@ export const addUsers = users => ({
 
 // Edit Info
 export const fetchInfo = username => dispatch => {
-  dispatch(infoLoading(true));  
-  return fetch(baseUrl + "users/edit/" + username)
-    .then(
-      response => {
-        if (response.ok) {
-          return response;
-        } else {
-          var error = new Error(
-            "Error " + response.status + ": " + response.statusText
-          );
-          error.response = response;
-          throw error;
+  dispatch(infoLoading(true));
+  return (
+    fetch(baseUrl + "users/edit/" + username)
+      .then(
+        response => {
+          if (response.ok) {
+            return response;
+          } else {
+            var error = new Error(
+              "Error " + response.status + ": " + response.statusText
+            );
+            error.response = response;
+            throw error;
+          }
+        },
+        error => {
+          var errmess = new Error(error.message);
+          throw errmess;
         }
-      },
-      error => {
-        var errmess = new Error(error.message);
-        throw errmess;
-      }
-    )
-    .then(response => response.json())
-    //.then(info => dispatch(addInfo(info)))
-    .then(info => dispatch(addInfo(info)))
-    .catch(error => dispatch(infoFailed(error.message)));
+      )
+      .then(response => response.json())
+      //.then(info => dispatch(addInfo(info)))
+      .then(info => {
+        dispatch(addInfo(info));
+        dispatch(fetchFavorites(info));
+      })
+      .catch(error => dispatch(infoFailed(error.message)))
+  );
 };
 
 export const infoLoading = () => ({
@@ -174,7 +139,6 @@ export const addInfo = info => ({
   type: ActionTypes.ADD_INFO,
   payload: info
 });
-
 
 export const fetchComments = () => dispatch => {
   return fetch(baseUrl + "comments")
@@ -210,98 +174,17 @@ export const addComments = comments => ({
   payload: comments
 });
 
-export const fetchPromos = () => dispatch => {
-  dispatch(promosLoading(true));
-
-  return fetch(baseUrl + "promotions")
-    .then(
-      response => {
-        if (response.ok) {
-          return response;
-        } else {
-          var error = new Error(
-            "Error " + response.status + ": " + response.statusText
-          );
-          error.response = response;
-          throw error;
-        }
-      },
-      error => {
-        var errmess = new Error(error.message);
-        throw errmess;
-      }
-    )
-    .then(response => response.json())
-    .then(promos => dispatch(addPromos(promos)))
-    .catch(error => dispatch(promosFailed(error.message)));
-};
-
-export const promosLoading = () => ({
-  type: ActionTypes.PROMOS_LOADING
-});
-
-export const promosFailed = errmess => ({
-  type: ActionTypes.PROMOS_FAILED,
-  payload: errmess
-});
-
-export const addPromos = promos => ({
-  type: ActionTypes.ADD_PROMOS,
-  payload: promos
-});
-
-export const fetchLeaders = () => dispatch => {
-  dispatch(leadersLoading());
-
-  return fetch(baseUrl + "leaders")
-    .then(
-      response => {
-        if (response.ok) {
-          return response;
-        } else {
-          var error = new Error(
-            "Error " + response.status + ": " + response.statusText
-          );
-          error.response = response;
-          throw error;
-        }
-      },
-      error => {
-        var errmess = new Error(error.message);
-        throw errmess;
-      }
-    )
-    .then(response => response.json())
-    .then(leaders => dispatch(addLeaders(leaders)))
-    .catch(error => dispatch(leadersFailed(error.message)));
-};
-
-export const leadersLoading = () => ({
-  type: ActionTypes.LEADERS_LOADING
-});
-
-export const leadersFailed = errmess => ({
-  type: ActionTypes.LEADERS_FAILED,
-  payload: errmess
-});
-
-export const addLeaders = leaders => ({
-  type: ActionTypes.ADD_LEADERS,
-  payload: leaders
-});
-
-
 //export const postFeedback = feedback => dispatch => {
-export const postFeedback = feedback => dispatch => {  
+export const postFeedback = feedback => dispatch => {
   return fetch(baseUrl + "users/edit", {
     method: "POST",
     body: JSON.stringify(feedback),
     headers: {
       "Content-Type": "application/json"
-    },
-    credentials: "same-origin"
+    }
+    //credentials: "same-origin"
   })
-  .then(      
+    .then(
       response => {
         console.log("action:" + JSON.stringify(response));
         if (response.ok) {
@@ -321,8 +204,9 @@ export const postFeedback = feedback => dispatch => {
     .then(response => response.json())
     .then(response => {
       console.log("Feedback", response);
-      alert("Thank you for your feedback!\n" + JSON.stringify(response))  ;
-      window.location.href = 'localhost:3001/home';
+      alert("Thank you for your feedback!\n" + JSON.stringify(response));
+      dispatch(addInfo(response));
+      window.location.href = "localhost:3001/home";
     })
     .catch(error => {
       console.log("Feedback", error.message);
@@ -351,19 +235,19 @@ export const loginError = message => {
   };
 };
 
-export const loginUser = creds => dispatch => {  
-  dispatch(requestLogin(creds)); 
+export const loginUser = creds => dispatch => {
+  dispatch(requestLogin(creds));
   console.log("loginUser is excuted" + JSON.stringify(creds));
 
   return fetch(baseUrl + "users/login", {
-    method: 'POST',    
+    method: "POST",
     //mode:'no-cors',
     headers: {
       "Content-Type": "application/json"
-    },    
+    },
     body: JSON.stringify(creds)
   })
-  .then(
+    .then(
       response => {
         console.log("response: " + JSON.stringify(response));
         if (response.ok) {
@@ -383,14 +267,15 @@ export const loginUser = creds => dispatch => {
     .then(response => response.json())
     .then(response => {
       console.log("response: " + response);
-      if (response.success) {        
+      if (response.success) {
         localStorage.setItem("token", response.token);
-        localStorage.setItem("creds", JSON.stringify(creds));  
+        localStorage.setItem("creds", JSON.stringify(creds));
         /* let str = creds.username;      
         noti.on(str, (data) => {            
           console.log("getting data:" + JSON.stringify(data));          
         }); */
-        dispatch(fetchFavorites());
+        dispatch(fetchInfo(creds.username));
+        //dispatch(fetchFavorites());
         dispatch(receiveLogin(response));
       } else {
         var error = new Error("Error " + response.status);
@@ -408,16 +293,17 @@ export const registerError = message => {
   };
 };
 
-export const registerUser = creds => dispatch => {      
+export const registerUser = creds => dispatch => {
   return fetch(baseUrl + "users/signup", {
-    method: 'POST',
+    method: "POST",
     headers: {
       "Content-Type": "application/json"
-    },    
+    },
     body: JSON.stringify(creds)
   })
-  .then(
-      response => {        
+    .then(
+      response => {
+        console.log("response at top:" + JSON.stringify(response));
         if (response.ok) {
           return response;
         } else {
@@ -429,24 +315,31 @@ export const registerUser = creds => dispatch => {
         }
       },
       error => {
+        console.log("err at top:" + JSON.stringify(error));
         throw error;
       }
     )
     .then(response => response.json())
     .then(response => {
-      console.log("response: " + response);
-      if (response.success) {        
-        alert("You are signed up! Verify with your email account!");        
+      //console.log("response at bottom:" + JSON.stringify(response));
+      if (response.success) {
+        alert("You are signed up! Verify with your email account!");
       } else {
         var error = new Error("Error " + response.status);
-        error.response = response;
+        if (response.err.code === 11000) {
+          alert("The email address is already exists");
+        } else {
+          alert(response.err.message);
+        }
+        error.response = response.err;
         throw error;
       }
     })
-    .catch(error => dispatch(registerError(error.message)));
+    .catch(error => {
+      console.log(error);
+      dispatch(registerError(error.message));
+    });
 };
-
-
 
 export const requestLogout = () => {
   return {
@@ -470,21 +363,22 @@ export const logoutUser = () => dispatch => {
   dispatch(favoritesFailed("Error 401: Unauthorized"));
   dispatch(receiveLogout());
   dispatch(addInfo());
-  window.location.href = 'localhost:3001/home';
+  window.location.href = "localhost:3001/home";
 };
 
 export const postFavorite = users => dispatch => {
-  //const bearer = "Bearer " + localStorage.getItem("token");  
-  return fetch(baseUrl + "users/add/likedby", {    
-    method: "POST",
-    body: JSON.stringify(users),
-    headers: {
-      "Content-Type": "application/json",
-    //Authorization: bearer
-    },    
-    //credentials: "same-origin"
-  })
-  .then(
+  //const bearer = "Bearer " + localStorage.getItem("token");
+  return (
+    fetch(baseUrl + "users/add/like", {
+      method: "POST",
+      body: JSON.stringify({ user: users[0], data: users[1] }),
+      headers: {
+        "Content-Type": "application/json"
+        //Authorization: bearer
+      }
+      //credentials: "same-origin"
+    })
+      /*   .then(
       response => {
         if (response.ok) {
           return response;
@@ -499,21 +393,21 @@ export const postFavorite = users => dispatch => {
       error => {
         throw error;
       }
-    )
-    .then(response => response.json())
-    .then(response => {
-      console.log("Favorite Added", response);      
-      dispatch(addFavorites(response));
-    })
-    .catch(error => {
-      dispatch(favoritesFailed(error.message));
-      console.log(error);
-    });
+    ) */
+      .then(response => response.json())
+      .then(response => {
+        console.log("Favorite Added", response);
+        dispatch(addFavorites(response));
+      })
+      .catch(error => {
+        dispatch(favoritesFailed(error.message));
+        console.log(error);
+      })
+  );
 };
 
 export const deleteFavorite = users => dispatch => {
   const bearer = "bearer " + localStorage.getItem("token");
-
   return fetch(baseUrl + "favorites/" + users, {
     method: "DELETE",
     headers: {
@@ -545,17 +439,19 @@ export const deleteFavorite = users => dispatch => {
     .catch(error => dispatch(favoritesFailed(error.message)));
 };
 
-export const fetchLusers = (users) => dispatch => {
-  dispatch(lusersLoading(true));
-  //const bearer = "bearer " + localStorage.getItem("token");
-  return fetch(baseUrl + 'users/lusers', {
+export const fetchFavorites = info => dispatch => {
+  dispatch(favoritesLoading(true));
+  return fetch(baseUrl + "users/lusers", {
     method: "POST",
-    body: JSON.stringify({"users":users}),
+    body: JSON.stringify({
+      connected: info.connected,
+      likedby: info.likedby,
+      checkedby: info.checkedby
+    }),
     headers: {
-      "Content-Type": "application/json",
-    //Authorization: bearer
+      "Content-Type": "application/json"
     }
-  })      
+  })
     .then(
       response => {
         if (response.ok) {
@@ -575,9 +471,55 @@ export const fetchLusers = (users) => dispatch => {
     )
     .then(response => response.json())
     .then(lusers => {
-      console.log(lusers);
-      dispatch(addLusers(lusers))}
-      )
+      dispatch(addFavorites(lusers));
+    })
+    .catch(error => dispatch(favoritesFailed(error.message)));
+};
+
+export const favoritesLoading = () => ({
+  type: ActionTypes.FAVORITES_LOADING
+});
+
+export const favoritesFailed = errmess => ({
+  type: ActionTypes.FAVORITES_FAILED,
+  payload: errmess
+});
+
+export const addFavorites = favorites => ({
+  type: ActionTypes.ADD_FAVORITES,
+  payload: favorites
+});
+
+/* export const fetchLusers = users => dispatch => {
+  dispatch(lusersLoading(true));  
+  return fetch(baseUrl + "users/lusers", {
+    method: "POST",
+    body: JSON.stringify({ users: users }),
+    headers: {
+      "Content-Type": "application/json"      
+    }
+  })
+    .then(
+      response => {
+        if (response.ok) {
+          return response;
+        } else {
+          var error = new Error(
+            "Error " + response.status + ": " + response.statusText
+          );
+          error.response = response;
+          throw error;
+        }
+      },
+      error => {
+        var errmess = new Error(error.message);
+        throw errmess;
+      }
+    )
+    .then(response => response.json())
+    .then(lusers => {
+      dispatch(addLusers(lusers));
+    })
     .catch(error => dispatch(lusersFailed(error.message)));
 };
 
@@ -593,12 +535,11 @@ export const lusersFailed = errmess => ({
 export const addLusers = lusers => ({
   type: ActionTypes.ADD_LUSERS,
   payload: lusers
-});
+});*/
 
-export const fetchFavorites = (username) => dispatch => {
-  dispatch(favoritesLoading(true));
-  //const bearer = "bearer " + localStorage.getItem("token");
-  return fetch(baseUrl + `users/${username}/likedby`)      
+/* export const fetchFavorites = username => dispatch => {
+  dispatch(favoritesLoading(true));  
+  return fetch(baseUrl + `users/${username}/likedby`)
     .then(
       response => {
         if (response.ok) {
@@ -620,22 +561,137 @@ export const fetchFavorites = (username) => dispatch => {
     .then(likedby => {
       console.log("likedby at action creator:" + likedby);
       dispatch(fetchLusers(likedby));
-      dispatch(addFavorites(likedby))}
-      )
+      dispatch(addFavorites(likedby));
+    })
     .catch(error => dispatch(favoritesFailed(error.message)));
 };
+ */
 
-export const favoritesLoading = () => ({
-  type: ActionTypes.FAVORITES_LOADING
+//fetchNoti
+export const checkNoti = (notiId, date) => dispatch => {
+  return fetch(baseUrl + `noti/${notiId}`, {
+    method: "PUT",
+    body: JSON.stringify({
+      date: date
+    }),
+    headers: {
+      "Content-Type": "application/json"
+      //Authorization: bearer
+    }
+  })
+    .then(
+      response => {
+        if (response.ok) {
+          return response;
+        } else {
+          var error = new Error(
+            "Error " + response.status + ": " + response.statusText
+          );
+          error.response = response;
+          throw error;
+        }
+      },
+      error => {
+        var errmess = new Error(error.message);
+        throw errmess;
+      }
+    )
+    .then(response => response.json())
+    .then(noties => {
+      console.log("fetchNoti response:" + JSON.stringify(noties));
+      dispatch(addNoties(noties));
+    })
+    .catch(error => dispatch(notiesFailed(error.message)));
+  //.catch(error => console.log(error));
+};
+
+export const fetchNoties = notiId => dispatch => {
+  dispatch(notiesLoading(true));
+  return fetch(baseUrl + `noti/${notiId}`)
+    .then(
+      response => {
+        if (response.ok) {
+          return response;
+        } else {
+          var error = new Error(
+            "Error " + response.status + ": " + response.statusText
+          );
+          error.response = response;
+          throw error;
+        }
+      },
+      error => {
+        var errmess = new Error(error.message);
+        throw errmess;
+      }
+    )
+    .then(response => response.json())
+    .then(noties =>
+      //console.log("fetchNoti response:" + JSON.stringify(noties));
+      {
+        let unread = 0;
+        noties["comments"].map(noti => {
+          if (noti["unread"]) unread += 1;
+        });
+        noties["unread"] = unread;
+        dispatch(addNoties(noties));
+      }
+    )
+    .catch(error => dispatch(notiesFailed(error.message)));
+};
+
+export const notiesLoading = () => ({
+  type: ActionTypes.NOTIES_LOADING
 });
 
-export const favoritesFailed = errmess => ({
-  type: ActionTypes.FAVORITES_FAILED,
+export const notiesFailed = errmess => ({
+  type: ActionTypes.NOTIES_FAILED,
   payload: errmess
 });
 
-export const addFavorites = favorites => ({
-  type: ActionTypes.ADD_FAVORITES,
-  payload: favorites
+export const addNoties = noties => ({
+  type: ActionTypes.ADD_NOTIES,
+  payload: noties
 });
 
+export const fetchProfile = username => dispatch => {
+  dispatch(profileLoading(true));
+  return fetch(baseUrl + `users/edit/${username}`)
+    .then(
+      response => {
+        if (response.ok) {
+          return response;
+        } else {
+          var error = new Error(
+            "Error " + response.status + ": " + response.statusText
+          );
+          error.response = response;
+          throw error;
+        }
+      },
+      error => {
+        var errmess = new Error(error.message);
+        throw errmess;
+      }
+    )
+    .then(response => response.json())
+    .then(profile => {
+      console.log("fetchProfile:" + profile);
+      dispatch(addProfile(profile));
+    })
+    .catch(error => dispatch(profileFailed(error.message)));
+};
+
+export const profileLoading = () => ({
+  type: ActionTypes.PROFILE_LOADING
+});
+
+export const profileFailed = errmess => ({
+  type: ActionTypes.PROFILE_FAILED,
+  payload: errmess
+});
+
+export const addProfile = profile => ({
+  type: ActionTypes.ADD_PROFILE,
+  payload: profile
+});

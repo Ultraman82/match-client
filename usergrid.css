@@ -1,0 +1,76 @@
+body {
+    font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+    height: auto;
+    margin: 8px;
+  }
+  html {
+    height: auto;
+  }
+  .container {
+    padding: 20px;
+  }
+  .interactions {
+    display: flex;
+    justify-content: space-between;
+    overflow-y: scroll;
+    padding: 15px;
+  }
+  .search-container {
+    text-align: left;
+  }
+  .select-container {
+    text-align: right;
+  }
+  .emptyMessage {
+    display: flex;
+    justify-content: center;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    padding: 20px;
+  }
+  .userGrid {
+    display: flex;
+    width: 100%;
+    flex-flow: wrap;
+    align-items: center;
+    justify-content: center;
+  }
+  .card {
+    line-height: 14px;
+    white-space: nowrap;
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid #e3e3e3;
+    box-shadow: rgba(0, 0, 0, 0.2) 0 2px 10px;
+    border-radius: 4px;
+    overflow: hidden;
+    transition: 0.3s;
+  }
+  .card:hover {
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+    opacity: 0.8;
+  }
+  .cardImage {
+    width: 200px;
+  }
+  .cardName {
+    height: 60px;
+    width: 200px;
+    padding: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  /*loading*/
+  .loader {
+    border: 5px solid #f3f3f3;
+    -webkit-animation: spin 1s linear infinite;
+    animation: spin 1s linear infinite;
+    border-top: 5px solid #555;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    margin: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    left: 0;
+  }
