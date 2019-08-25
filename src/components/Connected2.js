@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Profile from "./Profile";
+import Chatroom from "./Chatroom";
 import {
   Card,
   CardImg,
@@ -27,14 +28,22 @@ class RenderUser extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isModalOpen: false
+      isModalOpen: false,
+      isChatOpen: false
     };
     this.toggleModal = this.toggleModal.bind(this);
+    this.toggleChat = this.toggleChat.bind(this);
   }
 
   toggleModal() {
     this.setState({
       isModalOpen: !this.state.isModalOpen
+    });
+  }
+
+  toggleChat() {
+    this.setState({
+      isChatOpen: !this.state.isChatOpen
     });
   }
 
@@ -56,27 +65,31 @@ class RenderUser extends Component {
           <CardBody>
             <CardText className="row justify-content-center">
               <div className="col-auto">{this.props.user.username}</div>
-              <span
-                onClick={e => {
-                  e.preventDefault();
-                  alert(
-                    `We sent message to ${
-                      this.props.user.username
-                    }. Lets see you would be liked!`
-                  );
-                  this.props.postFavorite([
-                    this.props.username,
-                    this.props.user.username
-                  ]);
-                }}
-                className="col-auto fa fa-heart fa-lg mouseover"
-                style={{ color: "#E91E63" }}
-              />
               {this.props.chatroom ? (
-                <span className="col-auto fa fa-comments fa-lg mouseover" />
+                <span
+                  className="col-auto fa fa-comments fa-lg mouseover"
+                  onClick={e => {
+                    e.preventDefault();
+                    this.toggleChat();
+                  }}
+                />
               ) : (
-                <span className="col-auto fa fa-close fa-lg mouseover" />
+                <span
+                  onClick={e => {
+                    e.preventDefault();
+                    alert(
+                      `We sent message to ${this.props.user.username}. Lets see you would be liked!`
+                    );
+                    this.props.postFavorite([
+                      JSON.parse(localStorage.creds).username,
+                      this.props.user.username
+                    ]);
+                  }}
+                  className="col-auto fa fa-heart fa-lg mouseover"
+                  style={{ color: "#E91E63" }}
+                />
               )}
+              <span className="col-auto fa fa-close fa-lg mouseover" />
             </CardText>
           </CardBody>
         </Card>
@@ -86,6 +99,10 @@ class RenderUser extends Component {
             profile={this.props.user}
             postFavorite={this.props.postFavorite}
           />
+        </Modal>
+        <Modal isOpen={this.state.isChatOpen} toggle={this.toggleChat}>
+          <ModalHeader toggle={this.toggleChat}>Chat</ModalHeader>
+          <Chatroom chatId={this.props.chatroom} />
         </Modal>
       </div>
     );
@@ -129,9 +146,12 @@ export default class Users extends Component {
             user={user}
             postFavorite={this.props.postFavorite}
             username={this.props.username}
-            chatroom={
-              this.props.chatrooms ? this.props.chatrooms[user.username] : null
-            }
+            chatroom={this.props.chatrooms[user.username]}
+            /* chatroom={
+              this.props.chatrooms[user.username] !== undefined
+                ? this.props.chatrooms[user.username]
+                : null
+            } */
           />
         </div>
       );

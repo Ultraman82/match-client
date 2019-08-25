@@ -367,6 +367,7 @@ export const logoutUser = () => dispatch => {
 };
 
 export const postFavorite = users => dispatch => {
+  console.log("postFavorite from client: " + users);
   //const bearer = "Bearer " + localStorage.getItem("token");
   return (
     fetch(baseUrl + "users/add/like", {
