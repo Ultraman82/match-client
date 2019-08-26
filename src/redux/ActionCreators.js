@@ -1,59 +1,6 @@
 import * as ActionTypes from "./ActionTypes";
 import { baseUrl } from "../shared/baseUrl";
-import io from "socket.io-client";
-const noti = io("https://localhost:3443/noti");
 
-/* startListen = (username) ={
-
-} */
-export const addComment = comment => ({
-  type: ActionTypes.ADD_COMMENT,
-  payload: comment
-});
-
-export const postComment = (dishId, rating, comment) => dispatch => {
-  const newComment = {
-    dish: dishId,
-    rating: rating,
-    comment: comment
-  };
-  console.log("Comment ", newComment);
-
-  const bearer = "Bearer " + localStorage.getItem("token");
-
-  return fetch(baseUrl + dishId + "/comments", {
-    method: "POST",
-    body: JSON.stringify(newComment),
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: bearer
-    },
-    credentials: "same-origin"
-  })
-    .then(
-      response => {
-        if (response.ok) {
-          return response;
-        } else {
-          var error = new Error(
-            "Error " + response.status + ": " + response.statusText
-          );
-          error.response = response;
-          throw error;
-        }
-      },
-      error => {
-        var errmess = new Error(error.message);
-        throw errmess;
-      }
-    )
-    .then(response => response.json())
-    .then(response => dispatch(addComment(response)))
-    .catch(error => {
-      console.log("Post comments ", error.message);
-      alert("Your comment could not be posted\nError: " + error.message);
-    });
-};
 //users
 export const fetchUsers = () => dispatch => {
   dispatch(usersLoading(true));
@@ -121,6 +68,7 @@ export const fetchInfo = username => dispatch => {
       .then(info => {
         dispatch(addInfo(info));
         dispatch(fetchFavorites(info));
+        dispatch(fetchUchat(Object.values(info.chatrooms)));
       })
       .catch(error => dispatch(infoFailed(error.message)))
   );
@@ -138,40 +86,6 @@ export const infoFailed = errmess => ({
 export const addInfo = info => ({
   type: ActionTypes.ADD_INFO,
   payload: info
-});
-
-export const fetchComments = () => dispatch => {
-  return fetch(baseUrl + "comments")
-    .then(
-      response => {
-        if (response.ok) {
-          return response;
-        } else {
-          var error = new Error(
-            "Error " + response.status + ": " + response.statusText
-          );
-          error.response = response;
-          throw error;
-        }
-      },
-      error => {
-        var errmess = new Error(error.message);
-        throw errmess;
-      }
-    )
-    .then(response => response.json())
-    .then(comments => dispatch(addComments(comments)))
-    .catch(error => dispatch(commentsFailed(error.message)));
-};
-
-export const commentsFailed = errmess => ({
-  type: ActionTypes.COMMENTS_FAILED,
-  payload: errmess
-});
-
-export const addComments = comments => ({
-  type: ActionTypes.ADD_COMMENTS,
-  payload: comments
 });
 
 //export const postFeedback = feedback => dispatch => {
@@ -491,83 +405,6 @@ export const addFavorites = favorites => ({
   payload: favorites
 });
 
-/* export const fetchLusers = users => dispatch => {
-  dispatch(lusersLoading(true));  
-  return fetch(baseUrl + "users/lusers", {
-    method: "POST",
-    body: JSON.stringify({ users: users }),
-    headers: {
-      "Content-Type": "application/json"      
-    }
-  })
-    .then(
-      response => {
-        if (response.ok) {
-          return response;
-        } else {
-          var error = new Error(
-            "Error " + response.status + ": " + response.statusText
-          );
-          error.response = response;
-          throw error;
-        }
-      },
-      error => {
-        var errmess = new Error(error.message);
-        throw errmess;
-      }
-    )
-    .then(response => response.json())
-    .then(lusers => {
-      dispatch(addLusers(lusers));
-    })
-    .catch(error => dispatch(lusersFailed(error.message)));
-};
-
-export const lusersLoading = () => ({
-  type: ActionTypes.LUSERS_LOADING
-});
-
-export const lusersFailed = errmess => ({
-  type: ActionTypes.LUSERS_FAILED,
-  payload: errmess
-});
-
-export const addLusers = lusers => ({
-  type: ActionTypes.ADD_LUSERS,
-  payload: lusers
-});*/
-
-/* export const fetchFavorites = username => dispatch => {
-  dispatch(favoritesLoading(true));  
-  return fetch(baseUrl + `users/${username}/likedby`)
-    .then(
-      response => {
-        if (response.ok) {
-          return response;
-        } else {
-          var error = new Error(
-            "Error " + response.status + ": " + response.statusText
-          );
-          error.response = response;
-          throw error;
-        }
-      },
-      error => {
-        var errmess = new Error(error.message);
-        throw errmess;
-      }
-    )
-    .then(response => response.json())
-    .then(likedby => {
-      console.log("likedby at action creator:" + likedby);
-      dispatch(fetchLusers(likedby));
-      dispatch(addFavorites(likedby));
-    })
-    .catch(error => dispatch(favoritesFailed(error.message)));
-};
- */
-
 //fetchNoti
 export const checkNoti = (notiId, date) => dispatch => {
   return fetch(baseUrl + `noti/${notiId}`, {
@@ -696,3 +533,220 @@ export const addProfile = profile => ({
   type: ActionTypes.ADD_PROFILE,
   payload: profile
 });
+
+//unredChat
+export const fetchUchat = chatIds => dispatch => {
+  dispatch(uchatLoading(true));
+  return fetch(baseUrl + `chat/unread`, {
+    method: "POST",
+    body: JSON.stringify({
+      username: JSON.parse(localStorage.creds).username,
+      chatIds: chatIds
+    }),
+    headers: {
+      "Content-Type": "application/json"
+    }
+  })
+    .then(
+      response => {
+        if (response.ok) {
+          return response;
+        } else {
+          var error = new Error(
+            "Error " + response.status + ": " + response.statusText
+          );
+          error.response = response;
+          throw error;
+        }
+      },
+      error => {
+        var errmess = new Error(error.message);
+        throw errmess;
+      }
+    )
+    .then(response => response.json())
+    .then(uchats =>
+      //console.log("fetchNoti response:" + JSON.stringify(uchat));
+      {
+        Object.values(uchats).reduce((a, b) => a + b, 0);
+
+        uchats["unread"] = Object.values(uchats).reduce((a, b) => a + b, 0);
+        dispatch(addUchat(uchats));
+      }
+    )
+    .catch(error => dispatch(uchatFailed(error.message)));
+};
+
+export const uchatLoading = () => ({
+  type: ActionTypes.UCHAT_LOADING
+});
+
+export const uchatFailed = errmess => ({
+  type: ActionTypes.UCHAT_FAILED,
+  payload: errmess
+});
+
+export const addUchat = uchat => ({
+  type: ActionTypes.ADD_UCHAT,
+  payload: uchat
+});
+
+/* export const addComment = comment => ({
+  type: ActionTypes.ADD_COMMENT,
+  payload: comment
+});
+
+export const postComment = (dishId, rating, comment) => dispatch => {
+  const newComment = {
+    dish: dishId,
+    rating: rating,
+    comment: comment
+  };
+  console.log("Comment ", newComment);
+
+  const bearer = "Bearer " + localStorage.getItem("token");
+
+  return fetch(baseUrl + dishId + "/comments", {
+    method: "POST",
+    body: JSON.stringify(newComment),
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: bearer
+    },
+    credentials: "same-origin"
+  })
+    .then(
+      response => {
+        if (response.ok) {
+          return response;
+        } else {
+          var error = new Error(
+            "Error " + response.status + ": " + response.statusText
+          );
+          error.response = response;
+          throw error;
+        }
+      },
+      error => {
+        var errmess = new Error(error.message);
+        throw errmess;
+      }
+    )
+    .then(response => response.json())
+    .then(response => dispatch(addComment(response)))
+    .catch(error => {
+      console.log("Post comments ", error.message);
+      alert("Your comment could not be posted\nError: " + error.message);
+    });
+}; */
+
+/* export const fetchComments = () => dispatch => {
+  return fetch(baseUrl + "comments")
+    .then(
+      response => {
+        if (response.ok) {
+          return response;
+        } else {
+          var error = new Error(
+            "Error " + response.status + ": " + response.statusText
+          );
+          error.response = response;
+          throw error;
+        }
+      },
+      error => {
+        var errmess = new Error(error.message);
+        throw errmess;
+      }
+    )
+    .then(response => response.json())
+    .then(comments => dispatch(addComments(comments)))
+    .catch(error => dispatch(commentsFailed(error.message)));
+};
+
+export const commentsFailed = errmess => ({
+  type: ActionTypes.COMMENTS_FAILED,
+  payload: errmess
+});
+
+export const addComments = comments => ({
+  type: ActionTypes.ADD_COMMENTS,
+  payload: comments
+}); */
+
+/* export const fetchLusers = users => dispatch => {
+  dispatch(lusersLoading(true));  
+  return fetch(baseUrl + "users/lusers", {
+    method: "POST",
+    body: JSON.stringify({ users: users }),
+    headers: {
+      "Content-Type": "application/json"      
+    }
+  })
+    .then(
+      response => {
+        if (response.ok) {
+          return response;
+        } else {
+          var error = new Error(
+            "Error " + response.status + ": " + response.statusText
+          );
+          error.response = response;
+          throw error;
+        }
+      },
+      error => {
+        var errmess = new Error(error.message);
+        throw errmess;
+      }
+    )
+    .then(response => response.json())
+    .then(lusers => {
+      dispatch(addLusers(lusers));
+    })
+    .catch(error => dispatch(lusersFailed(error.message)));
+};
+
+export const lusersLoading = () => ({
+  type: ActionTypes.LUSERS_LOADING
+});
+
+export const lusersFailed = errmess => ({
+  type: ActionTypes.LUSERS_FAILED,
+  payload: errmess
+});
+
+export const addLusers = lusers => ({
+  type: ActionTypes.ADD_LUSERS,
+  payload: lusers
+});*/
+
+/* export const fetchFavorites = username => dispatch => {
+  dispatch(favoritesLoading(true));  
+  return fetch(baseUrl + `users/${username}/likedby`)
+    .then(
+      response => {
+        if (response.ok) {
+          return response;
+        } else {
+          var error = new Error(
+            "Error " + response.status + ": " + response.statusText
+          );
+          error.response = response;
+          throw error;
+        }
+      },
+      error => {
+        var errmess = new Error(error.message);
+        throw errmess;
+      }
+    )
+    .then(response => response.json())
+    .then(likedby => {
+      console.log("likedby at action creator:" + likedby);
+      dispatch(fetchLusers(likedby));
+      dispatch(addFavorites(likedby));
+    })
+    .catch(error => dispatch(favoritesFailed(error.message)));
+};
+ */

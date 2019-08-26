@@ -102,7 +102,10 @@ class RenderUser extends Component {
         </Modal>
         <Modal isOpen={this.state.isChatOpen} toggle={this.toggleChat}>
           <ModalHeader toggle={this.toggleChat}>Chat</ModalHeader>
-          <Chatroom chatId={this.props.chatroom} />
+          <Chatroom
+            chatId={this.props.chatroom}
+            to={this.props.user.username}
+          />
         </Modal>
       </div>
     );

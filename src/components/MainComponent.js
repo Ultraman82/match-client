@@ -8,7 +8,6 @@ import Connected from "./Connected2";
 import { Switch, Route, Redirect, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import {
-  postComment,
   postFeedback,
   loginUser,
   logoutUser,
@@ -19,7 +18,8 @@ import {
   deleteFavorite,
   fetchUsers,
   fetchNoties,
-  checkNoti
+  checkNoti,
+  fetchUchat
   //fetchProfile
 } from "../redux/ActionCreators";
 import { actions } from "react-redux-form";
@@ -27,7 +27,7 @@ import { TransitionGroup, CSSTransition } from "react-transition-group";
 
 const mapStateToProps = state => {
   return {
-    //profile: state.profile,
+    uchats: state.uchats,
     noties: state.noties,
     lusers: state.lusers,
     users: state.users,
@@ -48,7 +48,8 @@ const mapDispatchToProps = dispatch => ({
   fetchFavorites: username => dispatch(fetchFavorites(username)),
   postFavorite: users => dispatch(postFavorite(users)),
   deleteFavorite: dishId => dispatch(deleteFavorite(dishId)),
-  checkNoti: (notiId, date) => dispatch(checkNoti(notiId, date))
+  checkNoti: (notiId, date) => dispatch(checkNoti(notiId, date)),
+  fetchUchat: chatIds => dispatch(fetchUchat(chatIds))
   //fetchProfile: (username) => dispatch(fetchProfile(username))
 });
 
@@ -58,6 +59,7 @@ class Main extends Component {
     if (this.props.auth.user !== null) {
       this.props.fetchInfo(this.props.auth.user.username);
       this.props.fetchNoties(this.props.auth.user.username);
+      //this.props.fetchUchats();
       //this.props.fetchFavorites(this.props.auth.user.username);
     }
   }
@@ -92,6 +94,7 @@ class Main extends Component {
             this.props.noties.noties ? this.props.noties.noties.unread : false
           }
           fetchNoties={this.props.fetchNoties}
+          info={this.props.info.info ? this.props.info.info : null}
         />
         <TransitionGroup>
           <CSSTransition

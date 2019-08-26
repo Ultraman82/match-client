@@ -1,40 +1,34 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux';
-import { createForms } from 'react-redux-form';
-import { Dishes } from './dishes';
-import { Info } from './info';
-import { Comments } from './comments';
-import { Promotions } from './promotions';
-import { Leaders } from './leaders';
-import { Noties } from './noties';
-import { Profile } from './profile';
-import { Favorites } from './favorites';
-import { Lusers } from './lusers'
-import { Auth } from './auth';
-import thunk from 'redux-thunk';
-import logger from 'redux-logger';
-import { InitialFeedback } from './forms';
-import { Users } from './users';
+import { createStore, combineReducers, applyMiddleware } from "redux";
+import { createForms } from "react-redux-form";
+import { Info } from "./info";
+import { Noties } from "./noties";
+import { Uchats } from "./uchats";
+import { Profile } from "./profile";
+import { Favorites } from "./favorites";
+import { Lusers } from "./lusers";
+import { Auth } from "./auth";
+import thunk from "redux-thunk";
+import logger from "redux-logger";
+import { InitialFeedback } from "./forms";
+import { Users } from "./users";
 
 export const ConfigureStore = () => {
-    const store = createStore(
-        combineReducers({
-            profile: Profile,
-            noties: Noties,
-            users: Users,
-            lusers: Lusers,
-            info: Info,
-            dishes: Dishes,
-            comments: Comments,
-            promotions: Promotions,
-            leaders: Leaders,
-            auth: Auth,
-            favorites : Favorites,
-            ...createForms({
-                feedback: InitialFeedback
-            })
-        }),
-        applyMiddleware(thunk, logger)
-    );
+  const store = createStore(
+    combineReducers({
+      profile: Profile,
+      noties: Noties,
+      uchats: Uchats,
+      users: Users,
+      lusers: Lusers,
+      info: Info,
+      auth: Auth,
+      favorites: Favorites,
+      ...createForms({
+        feedback: InitialFeedback
+      })
+    }),
+    applyMiddleware(thunk, logger)
+  );
 
-    return store;
-}
+  return store;
+};

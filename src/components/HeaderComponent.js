@@ -19,6 +19,7 @@ import {
 import { NavLink } from "react-router-dom";
 import io from "socket.io-client";
 const noti = io("https://localhost:3443/noti");
+const chat = io("https://localhost:3443/chat");
 
 class Header extends Component {
   constructor(props) {
@@ -45,6 +46,17 @@ class Header extends Component {
         console.log("noti:" + data);
         this.props.fetchNoties(JSON.parse(localStorage.creds).username);
       });
+      console.log("this.props.chatRooms" + this.props.info);
+      /* if (this.props.chatRooms) {
+        Object.keys(this.props.chatRooms).map(user => {
+          console.log("this.props.chatRooms" + this.props.chatRooms);
+          chat.on(this.props.chatRooms[user], data => {
+            console.log(
+              `chatRoom ${this.props.info.chatRooms[user]} socket listen: + ${data}`
+            );
+          });
+        });
+      } */
     }
   }
 
