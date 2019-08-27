@@ -534,10 +534,10 @@ export const addProfile = profile => ({
   payload: profile
 });
 
-//unredChat
+//unreadChat
 export const fetchUchat = chatIds => dispatch => {
   dispatch(uchatLoading(true));
-  return fetch(baseUrl + `chat/unread`, {
+  return fetch(baseUrl + "chat/unread", {
     method: "POST",
     body: JSON.stringify({
       username: JSON.parse(localStorage.creds).username,
@@ -569,7 +569,6 @@ export const fetchUchat = chatIds => dispatch => {
       //console.log("fetchNoti response:" + JSON.stringify(uchat));
       {
         Object.values(uchats).reduce((a, b) => a + b, 0);
-
         uchats["unread"] = Object.values(uchats).reduce((a, b) => a + b, 0);
         dispatch(addUchat(uchats));
       }
@@ -590,6 +589,42 @@ export const addUchat = uchat => ({
   type: ActionTypes.ADD_UCHAT,
   payload: uchat
 });
+
+export const checkChat = (chatId, date) => dispatch => {
+  return fetch(baseUrl + `chat/${chatId}`, {
+    method: "POST",
+    body: JSON.stringify({
+      date: date
+    }),
+    headers: {
+      "Content-Type": "application/json"
+      //Authorization: bearer
+    }
+  })
+    .then(
+      response => {
+        if (response.ok) {
+          return response;
+        } else {
+          var error = new Error(
+            "Error " + response.status + ": " + response.statusText
+          );
+          error.response = response;
+          throw error;
+        }
+      },
+      error => {
+        var errmess = new Error(error.message);
+        throw errmess;
+      }
+    )
+    .then(response => response.json())
+    .then(chats => {
+      console.log("fetchNoti response:" + JSON.stringify(chats));
+      dispatch(addUchat(chats));
+    })
+    .catch(error => dispatch(uchatFailed(error.message)));
+};
 
 /* export const addComment = comment => ({
   type: ActionTypes.ADD_COMMENT,

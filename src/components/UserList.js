@@ -48,14 +48,12 @@ class RenderUser extends Component {
           />
           <CardBody>
             <CardText className="row justify-content-center">
-              <div className="col-auto">{this.props.user.username}</div>
+              <span className="col-auto">{this.props.user.username}</span>
               <span
                 onClick={e => {
                   e.preventDefault();
                   alert(
-                    `We sent message to ${
-                      this.props.user.username
-                    }. Lets see you would be liked!`
+                    `We sent message to ${this.props.user.username}. Lets see you would be liked!`
                   );
                   this.props.postFavorite([
                     this.props.username,
@@ -151,7 +149,7 @@ const Users = props => {
         <div className="interactions">
           <div className="search-container">
             <select>
-              <option selected>Filter By</option>
+              <option defaultChecked>Filter By</option>
               <option value="1">One</option>
               <option value="2">Two</option>
               <option value="3">Three</option>
@@ -167,7 +165,7 @@ const Users = props => {
           </div>
           <div className="select-container">
             <select>
-              <option selected>Sort By</option>
+              <option defaultChecked>Sort By</option>
               <option value="1">One</option>
               <option value="2">Two</option>
               <option value="3">Three</option>

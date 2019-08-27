@@ -19,7 +19,7 @@ import {
 import { NavLink } from "react-router-dom";
 import io from "socket.io-client";
 const noti = io("https://localhost:3443/noti");
-const chat = io("https://localhost:3443/chat");
+const chatnoti = io("https://localhost:3443/chatnoti");
 
 class Header extends Component {
   constructor(props) {
@@ -29,7 +29,7 @@ class Header extends Component {
       isNavOpen: false,
       isModalOpen: false,
       isSignupOpen: false,
-      newNoti: 0
+      chatrooms: null
     };
     this.toggleNav = this.toggleNav.bind(this);
     this.toggleModal = this.toggleModal.bind(this);
@@ -46,19 +46,32 @@ class Header extends Component {
         console.log("noti:" + data);
         this.props.fetchNoties(JSON.parse(localStorage.creds).username);
       });
-      console.log("this.props.chatRooms" + this.props.info);
-      /* if (this.props.chatRooms) {
-        Object.keys(this.props.chatRooms).map(user => {
-          console.log("this.props.chatRooms" + this.props.chatRooms);
-          chat.on(this.props.chatRooms[user], data => {
-            console.log(
-              `chatRoom ${this.props.info.chatRooms[user]} socket listen: + ${data}`
-            );
-          });
-        });
-      } */
     }
   }
+
+  /* shouldComponentUpdate() {
+    console.log(
+      "this.props.chatRooms chouldComponentUpdate" +
+        JSON.stringify(this.props.uchats)
+    );
+  } */
+
+  componentWillReceiveProps() {
+    if (this.state.chatrooms === null && this.props.chatrooms !== null) {
+      let chatrooms = Object.values(this.props.chatrooms);
+      console.log("this.props.chatrooms" + chatrooms);
+      this.setState({ chatrooms });
+
+      let str = this.props.auth.user.username;
+      chatnoti.on(str, data => {
+        console.log("chatnoti from Head:" + data + `keys:${chatrooms}`);
+        this.props.fetchUchat(chatrooms);
+      });
+    }
+    console.log("this.props.uchats.unread" + JSON.stringify(this.props.uchats));
+  }
+
+  componentWillUnmount() {}
 
   toggleNav() {
     this.setState({
@@ -134,6 +147,9 @@ class Header extends Component {
                 <NavItem>
                   <NavLink className="nav-link" to="/menu">
                     <span className="fa fa-heart fa-lg" /> Connected
+                    <span className="badge badge-danger">
+                      {this.props.uchats !== 0 ? this.props.uchats : ""}
+                    </span>
                   </NavLink>
                 </NavItem>
                 <NavItem>

@@ -59,7 +59,6 @@ class Main extends Component {
     if (this.props.auth.user !== null) {
       this.props.fetchInfo(this.props.auth.user.username);
       this.props.fetchNoties(this.props.auth.user.username);
-      //this.props.fetchUchats();
       //this.props.fetchFavorites(this.props.auth.user.username);
     }
   }
@@ -93,8 +92,15 @@ class Main extends Component {
           unread={
             this.props.noties.noties ? this.props.noties.noties.unread : false
           }
+          uchats={
+            this.props.uchats.uchats ? this.props.uchats.uchats.unread : null
+          }
           fetchNoties={this.props.fetchNoties}
-          info={this.props.info.info ? this.props.info.info : null}
+          fetchUchat={this.props.fetchUchat}
+          //info={this.props.info.info ? this.props.info.info : null}
+          chatrooms={
+            this.props.info.info ? this.props.info.info.chatrooms : null
+          }
         />
         <TransitionGroup>
           <CSSTransition

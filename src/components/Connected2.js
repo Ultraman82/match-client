@@ -48,7 +48,7 @@ class RenderUser extends Component {
   }
 
   render() {
-    console.log("Render user chatroom:" + this.props.chatroom);
+    //console.log("Render user chatroom:" + this.props.chatroom);
     return (
       <div>
         <Card>
@@ -64,7 +64,7 @@ class RenderUser extends Component {
           />
           <CardBody>
             <CardText className="row justify-content-center">
-              <div className="col-auto">{this.props.user.username}</div>
+              <span className="col-auto">{this.props.user.username}</span>
               {this.props.chatroom ? (
                 <span
                   className="col-auto fa fa-comments fa-lg mouseover"
@@ -141,7 +141,7 @@ export default class Users extends Component {
     }
   }
   render() {
-    console.log("Connected props:" + JSON.stringify(this.props.chatrooms));
+    //console.log("Connected props:" + JSON.stringify(this.props.chatrooms));
     const connectedlist = this.props.users.connected.map(user => {
       return (
         <div key={user._id} className="col-9 mx-auto col-md-6 col-lg-4 my-1">
