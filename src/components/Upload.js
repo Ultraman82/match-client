@@ -20,7 +20,7 @@ class Uploader extends React.Component {
     this.setState({images:this.props.gallery});    
     console.log(JSON.stringify(this.props));
   }
-
+  
   onFormSubmit(e) {
     e.preventDefault();
     this.fileUpload();

@@ -184,11 +184,12 @@ export const loginUser = creds => dispatch => {
       if (response.success) {
         localStorage.setItem("token", response.token);
         localStorage.setItem("creds", JSON.stringify(creds));
+        localStorage.setItem("inChatroom", false);
         /* let str = creds.username;      
         noti.on(str, (data) => {            
           console.log("getting data:" + JSON.stringify(data));          
         }); */
-        dispatch(fetchInfo(creds.username));
+        //dispatch(fetchInfo(creds.username));
         //dispatch(fetchFavorites());
         dispatch(receiveLogin(response));
       } else {

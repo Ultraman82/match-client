@@ -40,18 +40,8 @@ class Chatroom extends Component {
       });
   }
 
-  sendRead(message) {
-    return fetch(baseUrl + "chat/" + this.props.chatId, {
-      method: "PUT",
-      body: JSON.stringify({
-        from: JSON.parse(localStorage.creds).username,
-        to: this.props.to,
-        message: message
-      }),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    })
+  sendRead() {
+    return fetch(baseUrl + "chat/unread?chatId=" + this.props.chatId)
       .then(response => response.json())
       .then(response => {
         console.log("pushChat" + response.comments);
@@ -76,6 +66,7 @@ class Chatroom extends Component {
   componentWillMount() {
     this.setState({ chat: io("https://localhost:3443/chat") });
     this.getChat();
+    localStorage.inChatroom = true;
   }
 
   componentDidMount() {
@@ -83,6 +74,7 @@ class Chatroom extends Component {
       console.log(`chatRoom ${this.props.chatId} data: ${data}`);
       if (data.split(",")[0] === JSON.parse(localStorage.creds).username) {
         console.log("Excute checkUchat");
+        this.sendRead();
       }
       this.getChat();
       //this.props.fetchNoties(JSON.parse(localStorage.creds).username);
@@ -91,6 +83,7 @@ class Chatroom extends Component {
 
   componentWillUnmount() {
     this.state.chat.disconnect();
+    localStorage.inChatroom = false;
   }
 
   render() {

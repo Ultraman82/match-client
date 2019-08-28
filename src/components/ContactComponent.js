@@ -331,7 +331,9 @@ class Contact extends Component {
               </Row>
               {/* <Upload gallery={this.props.info.gallery !== [] ? this.props.info.gallery:null}/> */}
               <Upload
-                gallery={this.props.info.gallery}
+                gallery={
+                  this.props.info.gallery ? this.props.info.gallery : null
+                }
                 username={this.props.info.username}
               />
             </Form>

@@ -172,7 +172,7 @@ class Main extends Component {
                     /*               resetFeedbackForm={this.props.resetFeedbackForm} */
                     postFeedback={this.props.postFeedback}
                     fetchInfo={this.props.fetchInfo}
-                    info={this.props.info.info}
+                    info={this.props.info.info ? this.props.info.info : null}
                   />
                 )}
               />

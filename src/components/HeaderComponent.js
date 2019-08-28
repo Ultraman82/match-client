@@ -57,7 +57,11 @@ class Header extends Component {
   } */
 
   componentWillReceiveProps() {
-    if (this.state.chatrooms === null && this.props.chatrooms !== null) {
+    if (
+      this.state.chatrooms === null &&
+      this.props.chatrooms !== null &&
+      this.props.chatrooms !== undefined
+    ) {
       let chatrooms = Object.values(this.props.chatrooms);
       console.log("this.props.chatrooms" + chatrooms);
       this.setState({ chatrooms });
@@ -65,7 +69,8 @@ class Header extends Component {
       let str = this.props.auth.user.username;
       chatnoti.on(str, data => {
         console.log("chatnoti from Head:" + data + `keys:${chatrooms}`);
-        this.props.fetchUchat(chatrooms);
+        if (localStorage.inChatroom === "false")
+          this.props.fetchUchat(chatrooms);
       });
     }
     console.log("this.props.uchats.unread" + JSON.stringify(this.props.uchats));
