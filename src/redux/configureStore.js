@@ -9,7 +9,7 @@ import { Lusers } from "./lusers";
 import { Auth } from "./auth";
 import thunk from "redux-thunk";
 import logger from "redux-logger";
-import { InitialFeedback } from "./forms";
+import { InitialFeedback, InitialFilter } from "./forms";
 import { Users } from "./users";
 
 export const ConfigureStore = () => {
@@ -24,7 +24,8 @@ export const ConfigureStore = () => {
       auth: Auth,
       favorites: Favorites,
       ...createForms({
-        feedback: InitialFeedback
+        feedback: InitialFeedback,
+        filter: InitialFilter
       })
     }),
     applyMiddleware(thunk, logger)

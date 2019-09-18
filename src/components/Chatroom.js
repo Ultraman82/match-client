@@ -40,16 +40,32 @@ class Chatroom extends Component {
       });
   }
 
-  sendRead() {
-    return fetch(baseUrl + "chat/unread?chatId=" + this.props.chatId)
+  readChat = () => {
+    return fetch(baseUrl + `chat/unread?chatId=${this.props.chatId}`)
+      .then(
+        response => {
+          if (response.ok) {
+            return response;
+          } else {
+            var error = new Error(
+              "Error " + response.status + ": " + response.statusText
+            );
+            error.response = response;
+            throw error;
+          }
+        },
+        error => {
+          var errmess = new Error(error.message);
+          throw errmess;
+        }
+      )
       .then(response => response.json())
       .then(response => {
-        console.log("pushChat" + response.comments);
+        //console.log("fetchProfile:" + profile);
+        console.log("Profile: " + JSON.stringify(response));
       })
-      .catch(error => {
-        console.log(error);
-      });
-  }
+      .catch(error => console.log(error.message));
+  };
 
   getChat() {
     return fetch(baseUrl + "chat/" + this.props.chatId)
@@ -66,6 +82,7 @@ class Chatroom extends Component {
   componentWillMount() {
     this.setState({ chat: io("https://localhost:3443/chat") });
     this.getChat();
+    this.readChat();
     localStorage.inChatroom = true;
   }
 
@@ -74,8 +91,9 @@ class Chatroom extends Component {
       console.log(`chatRoom ${this.props.chatId} data: ${data}`);
       if (data.split(",")[0] === JSON.parse(localStorage.creds).username) {
         console.log("Excute checkUchat");
-        this.sendRead();
+        this.readChat();
       }
+
       this.getChat();
       //this.props.fetchNoties(JSON.parse(localStorage.creds).username);
     });
@@ -83,6 +101,8 @@ class Chatroom extends Component {
 
   componentWillUnmount() {
     this.state.chat.disconnect();
+    this.props.fetchUchat(localStorage.chatrooms);
+    console.log("fetchUchat: " + this.props.fetchUchat);
     localStorage.inChatroom = false;
   }
 

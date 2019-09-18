@@ -198,8 +198,31 @@ class Contact extends Component {
                     <option value="female">female</option>
                     <option value="by">By Sexual</option>
                   </Control.select>
-                  {/* onClick={() => this.onPreferClick("by")}
-                  active={this.state.prefer === "by"} */}
+                </Col>
+              </Row>
+              {/*               <Row>
+                <Label htmlFor="dof" md={2}>
+                  Day of Birth
+                </Label>
+                <Col md={10}>
+                  <input type="date" id="dof" name="dof"
+                    min="1970-01-01" max="2018-12-31" />
+                </Col>
+              </Row> */}
+              <Row>
+                <Label htmlFor="dob" md={2}>
+                  Day of Birth
+                </Label>
+                <Col md={10}>
+                  <Control
+                    type="date"
+                    model=".dob"
+                    id="dob"
+                    name="dob"
+                    defaultValue={this.state.dob}
+                    className="form-control"
+                  >
+                  </Control>
                 </Col>
               </Row>
               <Row>
@@ -283,30 +306,6 @@ class Contact extends Component {
                   />
                 </Col>
               </Row>
-              {/* <Row className="form-group">
-                <Col md={{ size: 6, offset: 2 }}>
-                  <div className="form-check">
-                    <Label check>
-                      <Control.checkbox
-                        model=".agree"
-                        name="agree"
-                        className="form-check-input"
-                      />{" "}
-                      <strong>May we contact you?</strong>
-                    </Label>
-                  </div>
-                </Col>
-                <Col md={{ size: 3, offset: 1 }}>
-                  <Control.select
-                    model=".contactType"
-                    name="contactType"
-                    className="form-control"
-                  >
-                    <option>Tel.</option>
-                    <option>Email</option>
-                  </Control.select>
-                </Col>
-              </Row> */}
               <Row className="form-group">
                 <Label htmlFor="biography" md={2}>
                   Biography
@@ -339,7 +338,7 @@ class Contact extends Component {
             </Form>
           </div>
         </div>
-      </div>
+      </div >
     );
   }
 }

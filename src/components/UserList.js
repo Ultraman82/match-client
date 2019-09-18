@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Profile from "./Profile";
+import Filter from "./Filter";
 import {
   Card,
   CardImg,
@@ -146,32 +147,7 @@ const Users = props => {
   } else
     return (
       <div className="container">
-        <div className="interactions">
-          <div className="search-container">
-            <select>
-              <option defaultChecked>Filter By</option>
-              <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>
-            </select>
-            <div className="md-form mt-0">
-              <input
-                className="form-control"
-                type="text"
-                placeholder="Search"
-                aria-label="Search"
-              />
-            </div>
-          </div>
-          <div className="select-container">
-            <select>
-              <option defaultChecked>Sort By</option>
-              <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>
-            </select>
-          </div>
-        </div>
+        <Filter />
         <div className="row">{userlist}</div>
       </div>
     );

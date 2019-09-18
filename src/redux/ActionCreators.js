@@ -2,6 +2,30 @@ import * as ActionTypes from "./ActionTypes";
 import { baseUrl } from "../shared/baseUrl";
 
 //users
+/* export const fetchUsers = () => dispatch => {
+  dispatch(usersLoading(true));
+  return fetch(baseUrl + "users")
+    .then(
+      response => {
+        if (response.ok) {
+          return response;
+        } else {
+          var error = new Error(
+            "Error " + response.status + ": " + response.statusText
+          );
+          error.response = response;
+          throw error;
+        }
+      },
+      error => {
+        var errmess = new Error(error.message);
+        throw errmess;
+      }
+    )
+    .then(response => response.json())
+    .then(users => dispatch(addUsers(users)))
+    .catch(error => dispatch(usersFailed(error.message)));
+}; */
 export const fetchUsers = () => dispatch => {
   dispatch(usersLoading(true));
   return fetch(baseUrl + "users")
@@ -466,15 +490,15 @@ export const fetchNoties = notiId => dispatch => {
     )
     .then(response => response.json())
     .then(noties =>
-      //console.log("fetchNoti response:" + JSON.stringify(noties));
-      {
-        let unread = 0;
-        noties["comments"].map(noti => {
-          if (noti["unread"]) unread += 1;
-        });
-        noties["unread"] = unread;
-        dispatch(addNoties(noties));
-      }
+    //console.log("fetchNoti response:" + JSON.stringify(noties));
+    {
+      let unread = 0;
+      noties["comments"].map(noti => {
+        if (noti["unread"]) unread += 1;
+      });
+      noties["unread"] = unread;
+      dispatch(addNoties(noties));
+    }
     )
     .catch(error => dispatch(notiesFailed(error.message)));
 };
@@ -567,12 +591,12 @@ export const fetchUchat = chatIds => dispatch => {
     )
     .then(response => response.json())
     .then(uchats =>
-      //console.log("fetchNoti response:" + JSON.stringify(uchat));
-      {
-        Object.values(uchats).reduce((a, b) => a + b, 0);
-        uchats["unread"] = Object.values(uchats).reduce((a, b) => a + b, 0);
-        dispatch(addUchat(uchats));
-      }
+    //console.log("fetchNoti response:" + JSON.stringify(uchat));
+    {
+      Object.values(uchats).reduce((a, b) => a + b, 0);
+      uchats["unread"] = Object.values(uchats).reduce((a, b) => a + b, 0);
+      dispatch(addUchat(uchats));
+    }
     )
     .catch(error => dispatch(uchatFailed(error.message)));
 };
@@ -711,12 +735,12 @@ export const addComments = comments => ({
 }); */
 
 /* export const fetchLusers = users => dispatch => {
-  dispatch(lusersLoading(true));  
+  dispatch(lusersLoading(true));
   return fetch(baseUrl + "users/lusers", {
     method: "POST",
     body: JSON.stringify({ users: users }),
     headers: {
-      "Content-Type": "application/json"      
+      "Content-Type": "application/json"
     }
   })
     .then(
@@ -758,7 +782,7 @@ export const addLusers = lusers => ({
 });*/
 
 /* export const fetchFavorites = username => dispatch => {
-  dispatch(favoritesLoading(true));  
+  dispatch(favoritesLoading(true));
   return fetch(baseUrl + `users/${username}/likedby`)
     .then(
       response => {

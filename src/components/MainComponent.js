@@ -71,13 +71,13 @@ class Main extends Component {
           this.props.auth.isAuthenticated ? (
             <Component {...props} />
           ) : (
-            <Redirect
-              to={{
-                pathname: "/home",
-                state: { from: props.location }
-              }}
-            />
-          )
+              <Redirect
+                to={{
+                  pathname: "/home",
+                  state: { from: props.location }
+                }}
+              />
+            )
         }
       />
     );
@@ -135,6 +135,7 @@ class Main extends Component {
                     }
                     users={this.props.favorites.favorites}
                     postFavorite={this.props.postFavorite}
+                    fetchUchat={this.props.fetchUchat}
                   />
                 )}
               />

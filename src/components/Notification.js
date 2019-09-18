@@ -19,7 +19,7 @@ export default class Notification extends Component {
     //this.RenderProfile = this.RenderProfile.bind(this);
   }
 
-  componentDidMount() {}
+  componentDidMount() { }
 
   componentWillMount() {
     this.setState({ profile: this.props.profile });
@@ -61,19 +61,6 @@ export default class Notification extends Component {
       .catch(error => console.log(error.message));
   };
 
-  /* RenderProfile () {      
-      console.log("RenderProfile");
-      return (
-        <div>        
-          <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
-            <ModalHeader toggle={this.toggleModal}>Submit Comment</ModalHeader>
-            <ModalBody>
-              {this.state.profile ? (this.state.profile.username) : ("dd")}           
-            </ModalBody>
-          </Modal>
-        </div>
-      );
-    } */
   RenderNoti(noti) {
     //console.log(`noti: ${JSON.stringify(noti)} \nid: ${id}`)
     let bcolor = noti.unread ? "#76FF03" : "";
@@ -129,8 +116,8 @@ export default class Notification extends Component {
           );
         })
       ) : (
-        <h1>No notification</h1>
-      );
+          <h1>No notification</h1>
+        );
     return (
       <div>
         {noties}

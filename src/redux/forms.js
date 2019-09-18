@@ -8,5 +8,13 @@ export const InitialFeedback = {
   email: "",
   gps: false,
   biography: "",
+  dob: "",
   tags: []
+};
+
+export const InitialFilter = {
+  ageS: "",
+  ageL: "",
+  distanceS: "",
+  distanceL: ""
 };

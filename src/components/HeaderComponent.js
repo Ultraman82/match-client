@@ -65,6 +65,7 @@ class Header extends Component {
       let chatrooms = Object.values(this.props.chatrooms);
       console.log("this.props.chatrooms" + chatrooms);
       this.setState({ chatrooms });
+      localStorage.setItem("chatrooms", chatrooms);
 
       let str = this.props.auth.user.username;
       chatnoti.on(str, data => {
@@ -76,7 +77,7 @@ class Header extends Component {
     console.log("this.props.uchats.unread" + JSON.stringify(this.props.uchats));
   }
 
-  componentWillUnmount() {}
+  componentWillUnmount() { }
 
   toggleNav() {
     this.setState({
@@ -189,18 +190,18 @@ class Header extends Component {
                       </Button>
                     </div>
                   ) : (
-                    <div>
-                      <div className="navbar-text mr-3">
-                        {this.props.auth.user.username}
-                      </div>
-                      <Button outline onClick={this.handleLogout}>
-                        <span className="fa fa-sign-out fa-lg" /> Logout
+                      <div>
+                        <div className="navbar-text mr-3">
+                          {this.props.auth.user.username}
+                        </div>
+                        <Button outline onClick={this.handleLogout}>
+                          <span className="fa fa-sign-out fa-lg" /> Logout
                         {this.props.auth.isFetching ? (
-                          <span className="fa fa-spinner fa-pulse fa-fw" />
-                        ) : null}
-                      </Button>
-                    </div>
-                  )}
+                            <span className="fa fa-spinner fa-pulse fa-fw" />
+                          ) : null}
+                        </Button>
+                      </div>
+                    )}
                 </NavItem>
               </Nav>
             </Collapse>

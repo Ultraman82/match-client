@@ -33,9 +33,11 @@ class RenderUser extends Component {
     };
     this.toggleModal = this.toggleModal.bind(this);
     this.toggleChat = this.toggleChat.bind(this);
+    /*     this.readChat = this.readChat.bind(this); */
   }
 
   toggleModal() {
+
     this.setState({
       isModalOpen: !this.state.isModalOpen
     });
@@ -74,21 +76,21 @@ class RenderUser extends Component {
                   }}
                 />
               ) : (
-                <span
-                  onClick={e => {
-                    e.preventDefault();
-                    alert(
-                      `We sent message to ${this.props.user.username}. Lets see you would be liked!`
-                    );
-                    this.props.postFavorite([
-                      JSON.parse(localStorage.creds).username,
-                      this.props.user.username
-                    ]);
-                  }}
-                  className="col-auto fa fa-heart fa-lg mouseover"
-                  style={{ color: "#E91E63" }}
-                />
-              )}
+                  <span
+                    onClick={e => {
+                      e.preventDefault();
+                      alert(
+                        `We sent message to ${this.props.user.username}. Lets see you would be liked!`
+                      );
+                      this.props.postFavorite([
+                        JSON.parse(localStorage.creds).username,
+                        this.props.user.username
+                      ]);
+                    }}
+                    className="col-auto fa fa-heart fa-lg mouseover"
+                    style={{ color: "#E91E63" }}
+                  />
+                )}
               <span className="col-auto fa fa-close fa-lg mouseover" />
             </CardText>
           </CardBody>
@@ -105,6 +107,7 @@ class RenderUser extends Component {
           <Chatroom
             chatId={this.props.chatroom}
             to={this.props.user.username}
+            fetchUchat={this.props.fetchUchat}
           />
         </Modal>
       </div>
@@ -150,11 +153,12 @@ export default class Users extends Component {
             postFavorite={this.props.postFavorite}
             username={this.props.username}
             chatroom={this.props.chatrooms[user.username]}
-            /* chatroom={
-              this.props.chatrooms[user.username] !== undefined
-                ? this.props.chatrooms[user.username]
-                : null
-            } */
+            fetchUchat={this.props.fetchUchat}
+          /* chatroom={
+            this.props.chatrooms[user.username] !== undefined
+              ? this.props.chatrooms[user.username]
+              : null
+          } */
           />
         </div>
       );
