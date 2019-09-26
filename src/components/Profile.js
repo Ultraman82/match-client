@@ -67,7 +67,7 @@ class Profile extends Component {
           <img
             src={"https://localhost:3443/" + item}
             alt={item}
-            style={{ width: "100%" }}
+            style={{ width: "100%", height:"300px" }}
           />
         </CarouselItem>
       );

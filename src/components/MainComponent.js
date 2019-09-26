@@ -7,6 +7,7 @@ import Footer from "./FooterComponent";
 import Connected from "./Connected2";
 import { Switch, Route, Redirect, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
+import { InitialFilter } from "../redux/forms";
 import {
   postFeedback,
   loginUser,
@@ -19,7 +20,8 @@ import {
   fetchUsers,
   fetchNoties,
   checkNoti,
-  fetchUchat
+  fetchUchat,
+  sortUsers
   //fetchProfile
 } from "../redux/ActionCreators";
 import { actions } from "react-redux-form";
@@ -34,13 +36,14 @@ const mapStateToProps = state => {
     info: state.info,
     favorites: state.favorites,
     auth: state.auth
+    //filter: state.filter
   };
 };
 
 const mapDispatchToProps = dispatch => ({
   postFeedback: feedback => dispatch(postFeedback(feedback)),
   fetchInfo: username => dispatch(fetchInfo(username)),
-  fetchUsers: () => dispatch(fetchUsers()),
+  fetchUsers: filter => dispatch(fetchUsers(filter)),
   loginUser: creds => dispatch(loginUser(creds)),
   registerUser: creds => dispatch(registerUser(creds)),
   fetchNoties: username => dispatch(fetchNoties(username)),
@@ -49,13 +52,14 @@ const mapDispatchToProps = dispatch => ({
   postFavorite: users => dispatch(postFavorite(users)),
   deleteFavorite: dishId => dispatch(deleteFavorite(dishId)),
   checkNoti: (notiId, date) => dispatch(checkNoti(notiId, date)),
-  fetchUchat: chatIds => dispatch(fetchUchat(chatIds))
+  fetchUchat: chatIds => dispatch(fetchUchat(chatIds))  
   //fetchProfile: (username) => dispatch(fetchProfile(username))
 });
 
 class Main extends Component {
   componentWillMount() {
-    this.props.fetchUsers();
+    //console.log("main filter props=" + JSON.stringify(this.props.filter));
+    this.props.fetchUsers(InitialFilter);
     if (this.props.auth.user !== null) {
       this.props.fetchInfo(this.props.auth.user.username);
       this.props.fetchNoties(this.props.auth.user.username);
@@ -71,13 +75,13 @@ class Main extends Component {
           this.props.auth.isAuthenticated ? (
             <Component {...props} />
           ) : (
-              <Redirect
-                to={{
-                  pathname: "/home",
-                  state: { from: props.location }
-                }}
-              />
-            )
+            <Redirect
+              to={{
+                pathname: "/home",
+                state: { from: props.location }
+              }}
+            />
+          )
         }
       />
     );
@@ -108,6 +112,7 @@ class Main extends Component {
             classNames="page"
             timeout={300}
           >
+            
             <Switch>
               <Route
                 exact
@@ -121,11 +126,12 @@ class Main extends Component {
                     }
                     users={this.props.users.users}
                     postFavorite={this.props.postFavorite}
+                    fetchUsers={this.props.fetchUsers}                    
                   />
                 )}
               />
               } />
-              <Route
+              <PrivateRoute
                 exact
                 path="/menu"
                 component={() => (
@@ -140,7 +146,7 @@ class Main extends Component {
                 )}
               />
               {/* <Route path="/menu/:dishId" component={DishWithId} /> */}
-              <Route
+              <PrivateRoute 
                 exact
                 path="/chat"
                 component={() => (
@@ -165,18 +171,15 @@ class Main extends Component {
                   />
                 )}
               /> */}
-              <Route
+              <PrivateRoute 
                 exact
                 path="/contactus"
-                component={() => (
-                  <Contact
-                    /*               resetFeedbackForm={this.props.resetFeedbackForm} */
+                component={() => 
+                  <Contact                    
                     postFeedback={this.props.postFeedback}
                     fetchInfo={this.props.fetchInfo}
-                    info={this.props.info.info ? this.props.info.info : null}
-                  />
-                )}
-              />
+                    info={this.props.info.info ? this.props.info.info : null}             
+                />} />              
               <Redirect to="/home" />
             </Switch>
           </CSSTransition>
@@ -193,3 +196,4 @@ export default withRouter(
     mapDispatchToProps
   )(Main)
 );
+

@@ -33,13 +33,19 @@ class RenderUser extends Component {
     });
   }
 
+  reportUser() {
+
+  }
+
   render() {
     return (
       <div>
-        <Card>
+        <Card style={{maxWidth:"250px"}}>
           <CardImg
-            className="mouseover"
-            width="100%"
+            className="mouseover img-responsive"            
+            height="300px"            
+            overflow="hidden"
+            /* style={{maxWidth:"226px"}} */
             src={baseUrl + this.props.user.profile}
             alt={this.props.user.username}
             onClick={e => {
@@ -65,6 +71,8 @@ class RenderUser extends Component {
                 style={{ color: "#E91E63" }}
               />
               <span className="col-auto fa fa-close fa-lg mouseover" />
+              <span className="col-auto fa  fa-exclamation-circle
+ fa-lg mouseover" onClick={() => {}}/>
             </CardText>
           </CardBody>
         </Card>
@@ -112,21 +120,23 @@ class RenderUser extends Component {
   );
 } */
 
-const Users = props => {
-  //console.log("props in Users:" + props.postFavorite);
-  const userlist = props.users.map(user => {
-    return (
-      /* <div key={user._id} className="col-12 col-md-3 m-1">
-      <div key={user._id} className="col-9 mx-auto col-md-6 col-lg-3 my-1">*/
-      <div key={user._id} className="col-9 mx-auto col-md-6 col-lg-4 my-1">
-        <RenderUser
-          user={user}
-          postFavorite={props.postFavorite}
-          username={props.username}
-        />
-      </div>
-    );
-  });
+const Users = props => {  
+  const userlist = (props.users[0] === null) ? (<h1>Result has not found</h1>) :(
+    props.users.map(user => {
+    if (user != undefined){
+      return (
+        /* <div key={user._id} className="col-12 col-md-3 m-1">
+        <div key={user._id} className="col-9 mx-auto col-md-6 col-lg-3 my-1">*/
+        <div key={user._id} className="col-auto mx-auto col-md-6 col-lg-4 my-1">
+          <RenderUser
+            user={user}
+            postFavorite={props.postFavorite}
+            username={props.username}
+          />
+        </div>
+      );
+    }
+  }));
 
   if (props.users.isLoading) {
     return (
@@ -147,7 +157,7 @@ const Users = props => {
   } else
     return (
       <div className="container">
-        <Filter />
+        <Filter fetchUsers={props.fetchUsers}/>                
         <div className="row">{userlist}</div>
       </div>
     );

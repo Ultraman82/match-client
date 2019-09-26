@@ -26,9 +26,17 @@ import { baseUrl } from "../shared/baseUrl";
     .then(users => dispatch(addUsers(users)))
     .catch(error => dispatch(usersFailed(error.message)));
 }; */
-export const fetchUsers = () => dispatch => {
+export const fetchUsers = (filter) => dispatch => {
   dispatch(usersLoading(true));
-  return fetch(baseUrl + "users")
+  //console.log("filter string = " + JSON.stringify(filter));
+  return fetch(baseUrl + "users/filtered", {
+    method: "POST",
+    body: JSON.stringify(filter),
+    headers: {
+      "Content-Type": "application/json"
+    }
+    //credentials: "same-origin"
+  })
     .then(
       response => {
         if (response.ok) {
@@ -50,6 +58,32 @@ export const fetchUsers = () => dispatch => {
     .then(users => dispatch(addUsers(users)))
     .catch(error => dispatch(usersFailed(error.message)));
 };
+
+
+/* export const fetchUsers = () => dispatch => {
+  dispatch(usersLoading(true));  
+  return fetch(baseUrl + "users")
+    .then(
+      response => {
+        if (response.ok) {
+          return response;
+        } else {
+          var error = new Error(
+            "Error " + response.status + ": " + response.statusText
+          );
+          error.response = response;
+          throw error;
+        }
+      },
+      error => {
+        var errmess = new Error(error.message);
+        throw errmess;
+      }
+    )
+    .then(response => response.json())
+    .then(users => dispatch(addUsers(users)))
+    .catch(error => dispatch(usersFailed(error.message)));
+}; */
 
 export const usersLoading = () => ({
   type: ActionTypes.USERS_LOADING
@@ -90,9 +124,9 @@ export const fetchInfo = username => dispatch => {
       .then(response => response.json())
       //.then(info => dispatch(addInfo(info)))
       .then(info => {
-        dispatch(addInfo(info));
         dispatch(fetchFavorites(info));
         dispatch(fetchUchat(Object.values(info.chatrooms)));
+        dispatch(addInfo(info));
       })
       .catch(error => dispatch(infoFailed(error.message)))
   );
@@ -187,7 +221,7 @@ export const loginUser = creds => dispatch => {
   })
     .then(
       response => {
-        console.log("response: " + JSON.stringify(response));
+        //console.log("response: " + JSON.stringify(response));
         if (response.ok) {
           return response;
         } else {
@@ -216,6 +250,7 @@ export const loginUser = creds => dispatch => {
         //dispatch(fetchInfo(creds.username));
         //dispatch(fetchFavorites());
         dispatch(receiveLogin(response));
+        window.location.reload();
       } else {
         var error = new Error("Error " + response.status);
         error.response = response;
@@ -293,20 +328,41 @@ export const receiveLogout = () => {
 };
 
 // Logs the user out
-export const logoutUser = () => dispatch => {
-  dispatch(requestLogout());
-  //noti.reremoveAllListeners(JSON.parse(localStorage.getItem('creds')).username);
-  //noti.removeAllListeners();
-  localStorage.removeItem("token");
-  localStorage.removeItem("creds");
-  dispatch(favoritesFailed("Error 401: Unauthorized"));
-  dispatch(receiveLogout());
-  dispatch(addInfo());
-  window.location.href = "localhost:3001/home";
-};
+export const logoutUser = () => dispatch => {  
+  return (
+    fetch(baseUrl + `users/logout?username=${JSON.parse(localStorage.creds).username}`)
+      .then(
+        response => {
+          if (response.ok) {
+            return response;
+          } else {
+            var error = new Error(
+              "Error " + response.status + ": " + response.statusText
+            );
+            error.response = response;
+            throw error;
+          }
+        },
+        error => {
+          var errmess = new Error(error.message);
+          throw errmess;
+        }
+      )
+      .then(response => response.json())        
+      .then(info => {
+        dispatch(requestLogout());  
+        localStorage.removeItem("token");
+        localStorage.removeItem("creds");
+        //dispatch(favoritesFailed("Error 401: Unauthorized"));
+        dispatch(receiveLogout());          
+      })
+      .catch(error => console.log(error)) 
+  );
+  
+  //window.location.href = "localhost:3001/home";
+  };
 
-export const postFavorite = users => dispatch => {
-  console.log("postFavorite from client: " + users);
+export const postFavorite = users => dispatch => {  
   //const bearer = "Bearer " + localStorage.getItem("token");
   return (
     fetch(baseUrl + "users/add/like", {
@@ -490,15 +546,15 @@ export const fetchNoties = notiId => dispatch => {
     )
     .then(response => response.json())
     .then(noties =>
-    //console.log("fetchNoti response:" + JSON.stringify(noties));
-    {
-      let unread = 0;
-      noties["comments"].map(noti => {
-        if (noti["unread"]) unread += 1;
-      });
-      noties["unread"] = unread;
-      dispatch(addNoties(noties));
-    }
+      //console.log("fetchNoti response:" + JSON.stringify(noties));
+      {
+        let unread = 0;
+        noties["comments"].map(noti => {
+          if (noti["unread"]) unread += 1;
+        });
+        noties["unread"] = unread;
+        dispatch(addNoties(noties));
+      }
     )
     .catch(error => dispatch(notiesFailed(error.message)));
 };
@@ -591,12 +647,12 @@ export const fetchUchat = chatIds => dispatch => {
     )
     .then(response => response.json())
     .then(uchats =>
-    //console.log("fetchNoti response:" + JSON.stringify(uchat));
-    {
-      Object.values(uchats).reduce((a, b) => a + b, 0);
-      uchats["unread"] = Object.values(uchats).reduce((a, b) => a + b, 0);
-      dispatch(addUchat(uchats));
-    }
+      //console.log("fetchNoti response:" + JSON.stringify(uchat));
+      {
+        Object.values(uchats).reduce((a, b) => a + b, 0);
+        uchats["unread"] = Object.values(uchats).reduce((a, b) => a + b, 0);
+        dispatch(addUchat(uchats));
+      }
     )
     .catch(error => dispatch(uchatFailed(error.message)));
 };

@@ -101,8 +101,7 @@ export default class Notification extends Component {
       </div>
     );
   }
-  render() {
-    console.log("this.props.noti" + JSON.stringify(this.props.noti));
+  render() {    
     const noties =
       this.props.noti !== null && this.props.noti.comments.length !== 0 ? (
         this.props.noti.comments.map(noti => {

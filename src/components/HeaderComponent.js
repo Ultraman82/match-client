@@ -14,7 +14,7 @@ import {
   Form,
   FormGroup,
   Input,
-  Label
+  Label 
 } from "reactstrap";
 import { NavLink } from "react-router-dom";
 import io from "socket.io-client";
@@ -43,7 +43,7 @@ class Header extends Component {
     if (this.props.auth.isAuthenticated) {
       let str = this.props.auth.user.username;
       noti.on(str, data => {
-        console.log("noti:" + data);
+        alert(data);
         this.props.fetchNoties(JSON.parse(localStorage.creds).username);
       });
     }
@@ -63,18 +63,18 @@ class Header extends Component {
       this.props.chatrooms !== undefined
     ) {
       let chatrooms = Object.values(this.props.chatrooms);
-      console.log("this.props.chatrooms" + chatrooms);
+      //console.log("this.props.chatrooms" + chatrooms);
       this.setState({ chatrooms });
       localStorage.setItem("chatrooms", chatrooms);
 
       let str = this.props.auth.user.username;
       chatnoti.on(str, data => {
-        console.log("chatnoti from Head:" + data + `keys:${chatrooms}`);
+        //console.log("chatnoti from Head:" + data + `keys:${chatrooms}`);
         if (localStorage.inChatroom === "false")
           this.props.fetchUchat(chatrooms);
       });
     }
-    console.log("this.props.uchats.unread" + JSON.stringify(this.props.uchats));
+    //console.log("this.props.uchats.unread" + JSON.stringify(this.props.uchats));
   }
 
   componentWillUnmount() { }
@@ -120,6 +120,7 @@ class Header extends Component {
 
   handleLogout() {
     noti.removeAllListeners();
+    chatnoti.removeAllListeners();
     this.props.logoutUser();
   }
 
@@ -127,9 +128,13 @@ class Header extends Component {
     return (
       <React.Fragment>
         {/* <Navbar dark expand="md"> */}
-        <Navbar dark expand="md">
+        <Navbar dark expand="md">          
           <div className="container">
-            <NavbarToggler onClick={this.toggleNav} />
+            <NavbarToggler onClick={this.toggleNav} >
+              <span className="badge badge-danger">
+                {this.props.uchats + this.props.unread !== 0 ? this.props.uchats + this.props.unread : ""}
+              </span>
+            </NavbarToggler>
             <NavbarBrand className="mr-auto" href="/">
               <img
                 src="assets/images/logo.png"
@@ -168,7 +173,7 @@ class Header extends Component {
                 </NavItem>
                 <NavItem>
                   <NavLink className="nav-link" to="/contactus">
-                    <span className="fa fa-address-card fa-lg" /> User info
+                    <span className="fa fa-address-card fa-lg" /> Profile
                   </NavLink>
                 </NavItem>
               </Nav>

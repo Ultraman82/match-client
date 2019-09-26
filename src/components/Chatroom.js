@@ -102,7 +102,7 @@ class Chatroom extends Component {
   componentWillUnmount() {
     this.state.chat.disconnect();
     this.props.fetchUchat(localStorage.chatrooms);
-    console.log("fetchUchat: " + this.props.fetchUchat);
+    //console.log("fetchUchat: " + this.props.fetchUchat);
     localStorage.inChatroom = false;
   }
 
