@@ -34,7 +34,7 @@ class Contact extends Component {
     this.tagClick = this.tagClick.bind(this);
   }
 
-  componentWillMount() {
+  componentWillMount() {    
     //console.log("fetchInfo:" + this.props.fetchInfo + "\nUsername: " + this.props.username, "\nifno:" + this.props.info);
 
     //console.log(JSON.stringify(this.props.fetchInfo(this.props.username)));
@@ -44,7 +44,18 @@ class Contact extends Component {
     } */
     this.setState({
       ...this.props.info
-    });
+    });        
+  }
+  componentDidMount() {
+    fetch("https://api.ipify.org?format=json")
+    .then(response => response.json())
+    .then(result => {    
+      console.log(result.ip);        
+      fetch(`https://ipinfo.io/${result.ip}/json?token=1f700d00426ba7`)
+      .then(result => result.json())
+      .then(result => console.log("compulse gps " + JSON.stringify(result)));
+    })
+    .catch(error => console.log(error));
   }
 
   tagClick(tag) {
@@ -52,7 +63,6 @@ class Contact extends Component {
       tags: { ...this.state.tags, [tag]: !this.state.tags[tag] }
     });
   }
-
   getCurrentLocation(e) {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(position => {
@@ -61,6 +71,11 @@ class Contact extends Component {
         });
       });
     } else {
+      fetch("https://jsonip.com")
+      .then(result => {        
+        fetch(`https://ipinfo.io/${result.ip}/json?token=1f700d00426ba7`
+          ).then(result => console.log(result))
+      });      
       alert("Geolocation is not supported by this browser.");
     }
     e.preventDefault();
@@ -234,18 +249,17 @@ class Contact extends Component {
                 </Col>
               </Row> */}
             <Row>
-              <Label htmlFor="dob" md={2}>
+              <Label htmlFor="age" md={2}>
                 Day of Birth
               </Label>
               <Col md={10}>
-                <Control
-                  type="date"
-                  model=".dob"
-                  id="dob"
-                  name="dob"
-                  defaultValue={this.state.dob}
+                <Control.text                  
+                  model=".age"
+                  id="age"
+                  name="age"
+                  defaultValue={this.state.age}
                   className="form-control"
-                ></Control>
+                ></Control.text>
               </Col>
             </Row>
             <Row>

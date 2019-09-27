@@ -8,6 +8,7 @@ import Connected from "./Connected2";
 import { Switch, Route, Redirect, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { InitialFilter } from "../redux/forms";
+import {Alert} from "reactstrap";
 import {
   postFeedback,
   loginUser,
@@ -15,14 +16,11 @@ import {
   fetchInfo,
   registerUser,
   fetchFavorites,
-  postFavorite,
-  deleteFavorite,
+  postFavorite,  
   fetchUsers,
   fetchNoties,
   checkNoti,
-  fetchUchat,
-  sortUsers
-  //fetchProfile
+  fetchUchat
 } from "../redux/ActionCreators";
 import { actions } from "react-redux-form";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
@@ -36,7 +34,6 @@ const mapStateToProps = state => {
     info: state.info,
     favorites: state.favorites,
     auth: state.auth
-    //filter: state.filter
   };
 };
 
@@ -49,10 +46,10 @@ const mapDispatchToProps = dispatch => ({
   fetchNoties: username => dispatch(fetchNoties(username)),
   logoutUser: () => dispatch(logoutUser()),
   fetchFavorites: username => dispatch(fetchFavorites(username)),
-  postFavorite: users => dispatch(postFavorite(users)),
-  deleteFavorite: dishId => dispatch(deleteFavorite(dishId)),
+  postFavorite: users => dispatch(postFavorite(users)),  
   checkNoti: (notiId, date) => dispatch(checkNoti(notiId, date)),
-  fetchUchat: chatIds => dispatch(fetchUchat(chatIds))  
+  fetchUchat: chatIds => dispatch(fetchUchat(chatIds)),  
+  // postBlacklist: user => dispatch(postBlacklist(user))
   //fetchProfile: (username) => dispatch(fetchProfile(username))
 });
 
@@ -61,6 +58,7 @@ class Main extends Component {
     //console.log("main filter props=" + JSON.stringify(this.props.filter));
     this.props.fetchUsers(InitialFilter);
     if (this.props.auth.user !== null) {
+      this.props.fetchUsers({...InitialFilter, username:this.props.auth.user.username});
       this.props.fetchInfo(this.props.auth.user.username);
       this.props.fetchNoties(this.props.auth.user.username);
       //this.props.fetchFavorites(this.props.auth.user.username);
@@ -74,14 +72,19 @@ class Main extends Component {
         render={props =>
           this.props.auth.isAuthenticated ? (
             <Component {...props} />
-          ) : (
+          ) : (            
+          <div>
+            {alert("Please Log in first")}
             <Redirect
               to={{
                 pathname: "/home",
-                state: { from: props.location }
-              }}
+                state: { 
+                  from: props.location
+                 }
+              }}             
             />
-          )
+          </div>
+            )
         }
       />
     );
@@ -111,8 +114,7 @@ class Main extends Component {
             key={this.props.location.key}
             classNames="page"
             timeout={300}
-          >
-            
+          >            
             <Switch>
               <Route
                 exact
@@ -126,6 +128,7 @@ class Main extends Component {
                     }
                     users={this.props.users.users}
                     postFavorite={this.props.postFavorite}
+                    //postBlacklist={this.props.postBlacklist}
                     fetchUsers={this.props.fetchUsers}                    
                   />
                 )}

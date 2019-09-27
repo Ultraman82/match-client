@@ -29,8 +29,13 @@ class Filter extends Component {
   //componentWillMount() {}
 
   handleSubmit(values) {
-    console.log(JSON.stringify(values));
-    this.props.fetchUsers(values);
+    //console.log(JSON.stringify(values));    
+    if (localStorage.length === 0) {
+      alert("Login First");
+    } else {
+      this.props.fetchUsers({ ...values, username:JSON.parse(localStorage.creds).username});
+    }    
+    //this.props.fetchUsers(values);
   }
   toggle() {
     this.setState({

@@ -33,11 +33,12 @@ class RenderUser extends Component {
     };
     this.toggleModal = this.toggleModal.bind(this);
     this.toggleChat = this.toggleChat.bind(this);
-    /*     this.readChat = this.readChat.bind(this); */
+    this.postDislike = this.postDislike.bind(this);
+    /*     this.readChat = this.readChat.bind(this); */    
   }
+  
 
   toggleModal() {
-
     this.setState({
       isModalOpen: !this.state.isModalOpen
     });
@@ -50,7 +51,7 @@ class RenderUser extends Component {
   }
 
   render() {
-    //console.log("Render user chatroom:" + this.props.chatroom);
+    //console.log("Render user chatroom:" + JSON.stringify(this.props));
     return (
       <div>
         <Card>
@@ -75,23 +76,29 @@ class RenderUser extends Component {
                     this.toggleChat();
                   }}
                 />
-              ) : (
-                  <span
-                    onClick={e => {
-                      e.preventDefault();
-                      alert(
-                        `We sent message to ${this.props.user.username}. Lets see you would be liked!`
-                      );
-                      this.props.postFavorite([
-                        JSON.parse(localStorage.creds).username,
-                        this.props.user.username
-                      ]);
-                    }}
-                    className="col-auto fa fa-heart fa-lg mouseover"
-                    style={{ color: "#E91E63" }}
-                  />
-                )}
-              <span className="col-auto fa fa-close fa-lg mouseover" />
+              ) : (<div/>)}
+                {this.props.like ? (
+                <span
+                onClick={e => {
+                  e.preventDefault();                      
+                  this.props.postFavorite([
+                    JSON.parse(localStorage.creds).username,
+                    this.props.user.username
+                  ]);
+                }}
+                className="col-auto fa fa-heart fa-lg mouseover"
+                style={{ color: "#E91E63" }}
+              />
+              ) : (<div/>)}              
+                {this.props.dislike ? (
+                <span
+                  className="col-auto fa fa-close fa-lg mouseover"
+                  onClick={e => {
+                    e.preventDefault();
+                    this.postDislike(this.props.user.username);
+                  }}
+                />
+              ) : (<a/>)}              
             </CardText>
           </CardBody>
         </Card>
@@ -154,11 +161,8 @@ export default class Users extends Component {
             username={this.props.username}
             chatroom={this.props.chatrooms[user.username]}
             fetchUchat={this.props.fetchUchat}
-          /* chatroom={
-            this.props.chatrooms[user.username] !== undefined
-              ? this.props.chatrooms[user.username]
-              : null
-          } */
+            like={false}
+            dislike={true}
           />
         </div>
       );
@@ -170,6 +174,20 @@ export default class Users extends Component {
             user={user}
             postFavorite={this.props.postFavorite}
             username={this.props.username}
+            like={true}
+            dislike={false}
+          />
+        </div>
+      );
+    });
+    const likelist = this.props.users.like.map(user => {
+      return (
+        <div key={user._id} className="col-9 mx-auto col-md-6 col-lg-4 my-1">
+          <RenderUser
+            user={user}
+            postFavorite={this.props.postFavorite}
+            username={this.props.username}            
+            dislike={true}
           />
         </div>
       );
@@ -180,7 +198,9 @@ export default class Users extends Component {
           <RenderUser
             user={user}
             postFavorite={this.props.postFavorite}
-            username={this.props.username}
+            username={this.props.username}            
+            like={true}
+            dislike={false}
           />
         </div>
       );
@@ -205,8 +225,8 @@ export default class Users extends Component {
     } else
       return (
         <div className="container">
-          <Nav tabs>
-            <NavItem>
+          <Nav tabs className="row">
+            <NavItem className="col-auto">
               <NavLink
                 className={classnames({ active: this.state.activeTab === "1" })}
                 onClick={() => {
@@ -216,7 +236,7 @@ export default class Users extends Component {
                 Connected
               </NavLink>
             </NavItem>
-            <NavItem>
+            <NavItem className="col-auto">
               <NavLink
                 className={classnames({ active: this.state.activeTab === "2" })}
                 onClick={() => {
@@ -226,11 +246,21 @@ export default class Users extends Component {
                 Your fan
               </NavLink>
             </NavItem>
-            <NavItem>
+            <NavItem className="col-auto">
               <NavLink
                 className={classnames({ active: this.state.activeTab === "3" })}
                 onClick={() => {
                   this.toggle("3");
+                }}
+              >
+                Your Star
+              </NavLink>
+            </NavItem>
+            <NavItem className="col-auto">
+              <NavLink
+                className={classnames({ active: this.state.activeTab === "4" })}
+                onClick={() => {
+                  this.toggle("4");
                 }}
               >
                 Your stalker
@@ -245,6 +275,9 @@ export default class Users extends Component {
               <div className="row">{likedbylist}</div>
             </TabPane>
             <TabPane tabId="3">
+              <div className="row">{likelist}</div>
+            </TabPane>
+            <TabPane tabId="4">
               <div className="row">{checkedbylist}</div>
             </TabPane>
           </TabContent>

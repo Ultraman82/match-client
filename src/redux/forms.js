@@ -14,7 +14,7 @@ export const InitialFeedback = {
 
 export const InitialFilter = {
   ageS: 40,
-  ageL: 20,
+  ageL: 0,
   fameS: 100,
   fameL: 0,
   distanceS: 300,

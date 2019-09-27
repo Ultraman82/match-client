@@ -128,7 +128,7 @@ class Header extends Component {
     return (
       <React.Fragment>
         {/* <Navbar dark expand="md"> */}
-        <Navbar dark expand="md">          
+        <Navbar dark expand="md">
           <div className="container">
             <NavbarToggler onClick={this.toggleNav} >
               <span className="badge badge-danger">

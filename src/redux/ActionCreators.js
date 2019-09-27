@@ -28,6 +28,7 @@ import { baseUrl } from "../shared/baseUrl";
 }; */
 export const fetchUsers = (filter) => dispatch => {
   dispatch(usersLoading(true));
+  console.log(JSON.stringify(filter));
   //console.log("filter string = " + JSON.stringify(filter));
   return fetch(baseUrl + "users/filtered", {
     method: "POST",
@@ -252,12 +253,15 @@ export const loginUser = creds => dispatch => {
         dispatch(receiveLogin(response));
         window.location.reload();
       } else {
-        var error = new Error("Error " + response.status);
+        var error = new Error(response.status);
         error.response = response;
         throw error;
       }
     })
-    .catch(error => dispatch(loginError(error.message)));
+    .catch(error => {
+      alert(error.message);
+      dispatch(loginError(error.message))
+    });
 };
 
 export const registerError = message => {
@@ -351,10 +355,10 @@ export const logoutUser = () => dispatch => {
       .then(response => response.json())        
       .then(info => {
         dispatch(requestLogout());  
-        localStorage.removeItem("token");
-        localStorage.removeItem("creds");
+        localStorage.clear();        
         //dispatch(favoritesFailed("Error 401: Unauthorized"));
         dispatch(receiveLogout());          
+        window.location.reload();
       })
       .catch(error => console.log(error)) 
   );
@@ -362,78 +366,67 @@ export const logoutUser = () => dispatch => {
   //window.location.href = "localhost:3001/home";
   };
 
-export const postFavorite = users => dispatch => {  
-  //const bearer = "Bearer " + localStorage.getItem("token");
-  return (
-    fetch(baseUrl + "users/add/like", {
-      method: "POST",
-      body: JSON.stringify({ user: users[0], data: users[1] }),
-      headers: {
-        "Content-Type": "application/json"
-        //Authorization: bearer
-      }
-      //credentials: "same-origin"
-    })
-      /*   .then(
-      response => {
-        if (response.ok) {
-          return response;
-        } else {
-          var error = new Error(
-            "Error " + response.status + ": " + response.statusText
-          );
-          error.response = response;
+export const postFavorite = users => dispatch => {    
+  if (!localStorage.creds) {
+    alert("You need to log on first");
+  } else{
+    alert(
+      `We sent message to ${users[1]}. Lets see you would be liked!`
+    );
+    return (    
+      fetch(baseUrl + "users/add/like", {
+        method: "POST",
+        body: JSON.stringify({ user: users[0], data: users[1] }),
+        headers: {
+          "Content-Type": "application/json"
+          //Authorization: bearer
+        }
+        //credentials: "same-origin"
+      })
+        /*   .then(
+        response => {
+          if (response.ok) {
+            return response;
+          } else {
+            var error = new Error(
+              "Error " + response.status + ": " + response.statusText
+            );
+            error.response = response;
+            throw error;
+          }
+        },
+        error => {
           throw error;
         }
-      },
-      error => {
-        throw error;
-      }
-    ) */
-      .then(response => response.json())
-      .then(response => {
-        console.log("Favorite Added", response);
-        dispatch(addFavorites(response));
-      })
-      .catch(error => {
-        dispatch(favoritesFailed(error.message));
-        console.log(error);
-      })
-  );
+      ) */
+        .then(response => response.json())
+        .then(response => {
+          console.log("Favorite Added", response);
+          dispatch(addFavorites(response));
+        })
+        .catch(error => {
+          dispatch(favoritesFailed(error.message));
+          console.log(error);
+        })
+    );
+  }
 };
 
-export const deleteFavorite = users => dispatch => {
-  const bearer = "bearer " + localStorage.getItem("token");
-  return fetch(baseUrl + "favorites/" + users, {
-    method: "DELETE",
-    headers: {
-      Authorization: bearer
-    },
-    credentials: "same-origin"
-  })
-    .then(
-      response => {
-        if (response.ok) {
-          return response;
-        } else {
-          var error = new Error(
-            "Error " + response.status + ": " + response.statusText
-          );
-          error.response = response;
-          throw error;
-        }
-      },
-      error => {
-        throw error;
-      }
-    )
-    .then(response => response.json())
-    .then(favorites => {
-      console.log("Favorite Deleted", favorites);
-      dispatch(addFavorites(favorites));
-    })
-    .catch(error => dispatch(favoritesFailed(error.message)));
-};
+export const postDislike = user => dispatch => {      
+  dispatch(favoritesLoading(true));
+    return (    
+      fetch(baseUrl + `users/add/dislike?user=${user}`)        
+        .then(response => response.json())
+        .then(response => {
+          console.log("Blaklist Added", response);
+          window.location.reload();
+        })
+        .catch(error =>         
+          console.log(error)
+        )
+    );
+  }
+
 
 export const fetchFavorites = info => dispatch => {
   dispatch(favoritesLoading(true));
@@ -442,7 +435,8 @@ export const fetchFavorites = info => dispatch => {
     body: JSON.stringify({
       connected: info.connected,
       likedby: info.likedby,
-      checkedby: info.checkedby
+      checkedby: info.checkedby,
+      like: info.like
     }),
     headers: {
       "Content-Type": "application/json"

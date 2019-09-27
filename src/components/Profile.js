@@ -105,7 +105,7 @@ class Profile extends Component {
                 Interest:
                 {Object.keys(this.props.profile.tags).map(tag => {
                   if (this.props.profile.tags[tag]) {
-                    return <div>{tag}</div>;
+                    return <div kye={tag}>{tag}</div>;
                   }
                 })}
               </h5>

@@ -25,7 +25,28 @@ class RenderUser extends Component {
       isModalOpen: false
     };
     this.toggleModal = this.toggleModal.bind(this);
+    this.postBlacklist = this.postBlacklist.bind(this);
   }
+  postBlacklist = user => {    
+    if (!localStorage.creds) {
+      alert("You need to log on first");
+    } else{
+      alert(
+        `User ${user} is reported as fake account.`
+      );
+      return (    
+        fetch(baseUrl + `users/add/blacklist?user=${user}`)        
+          .then(response => response.json())
+          .then(response => {
+            console.log("Blaklist Added", response);
+            window.location.reload();
+          })
+          .catch(error =>         
+            console.log(error)
+          )
+      );
+    }
+  };
 
   toggleModal() {
     this.setState({
@@ -58,10 +79,7 @@ class RenderUser extends Component {
               <span className="col-auto">{this.props.user.username}</span>
               <span
                 onClick={e => {
-                  e.preventDefault();
-                  alert(
-                    `We sent message to ${this.props.user.username}. Lets see you would be liked!`
-                  );
+                  e.preventDefault();                  
                   this.props.postFavorite([
                     this.props.username,
                     this.props.user.username
@@ -70,9 +88,16 @@ class RenderUser extends Component {
                 className="col-auto fa fa-heart fa-lg mouseover"
                 style={{ color: "#E91E63" }}
               />
-              <span className="col-auto fa fa-close fa-lg mouseover" />
-              <span className="col-auto fa  fa-exclamation-circle
- fa-lg mouseover" onClick={() => {}}/>
+              {/* <span className="col-auto fa fa-close fa-lg mouseover" /> */}
+              {this.props.user.last_login === null ?
+                 (<span className="col-auto fa  fa-exclamation-circle fa-lg mouseover"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    this.postBlacklist(
+                      this.props.user.username
+                    );                    
+                  }}/>)
+                 :(<a/>)}              
             </CardText>
           </CardBody>
         </Card>
@@ -120,10 +145,10 @@ class RenderUser extends Component {
   );
 } */
 
-const Users = props => {  
+const Users = props => {      
   const userlist = (props.users[0] === null) ? (<h1>Result has not found</h1>) :(
-    props.users.map(user => {
-    if (user != undefined){
+    props.users.map(user => { 
+    if (user !== undefined && user !== null){      
       return (
         /* <div key={user._id} className="col-12 col-md-3 m-1">
         <div key={user._id} className="col-9 mx-auto col-md-6 col-lg-3 my-1">*/
@@ -131,6 +156,7 @@ const Users = props => {
           <RenderUser
             user={user}
             postFavorite={props.postFavorite}
+            postBlacklist={props.postBlacklist}
             username={props.username}
           />
         </div>
@@ -156,7 +182,7 @@ const Users = props => {
     );
   } else
     return (
-      <div className="container">
+      <div className="container">              
         <Filter fetchUsers={props.fetchUsers}/>                
         <div className="row">{userlist}</div>
       </div>
