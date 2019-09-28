@@ -53,10 +53,14 @@ class Contact extends Component {
       console.log(result.ip);        
       fetch(`https://ipinfo.io/${result.ip}/json?token=1f700d00426ba7`)
       .then(result => result.json())
-      .then(result => console.log("compulse gps " + JSON.stringify(result)));
+      .then(result => {
+        let gps = result.loc.split(',');
+        this.setState({gps:{lat:gps[0], lng:gps[1]}});
+        console.log(gps);
     })
     .catch(error => console.log(error));
-  }
+  })
+}
 
   tagClick(tag) {
     this.setState({
@@ -235,7 +239,7 @@ class Contact extends Component {
                   <option value="" />
                   <option value="male">male</option>
                   <option value="female">female</option>
-                  <option value="by">By Sexual</option>
+                  <option value="bi">Bi-sexual</option>
                 </Control.select>
               </Col>
             </Row>

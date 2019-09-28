@@ -32,29 +32,61 @@ class RenderUser extends Component {
       isChatOpen: false
     };
     this.toggleModal = this.toggleModal.bind(this);
-    this.toggleChat = this.toggleChat.bind(this);
-    this.postDislike = this.postDislike.bind(this);
+    this.toggleChat = this.toggleChat.bind(this);       
+    this.postDislike = this.postDislike.bind(this);       
     /*     this.readChat = this.readChat.bind(this); */    
   }
-  
 
   toggleModal() {
     this.setState({
       isModalOpen: !this.state.isModalOpen
     });
   }
+   /* getChat() {
+    return fetch(baseUrl + "chat/" + this.props.chatId)
+      .then(response => response.json())
+      .then(response => {
+        console.log(response.comments);
+        this.setState({ comments: response.comments });        
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+
+  componentDidMount() {    
+    this.getChat();      
+  } */
+
+  componentWillMount() {
+    console.log("this.props.chatroom " + this.props.chatroom);
+  }
 
   toggleChat() {
     this.setState({
       isChatOpen: !this.state.isChatOpen
     });
-  }
+  }  
+  postDislike = user => {      
+    //dispatch(favoritesLoading(true));    
+      return (    
+        fetch(baseUrl + `users/add/dislike?user=${user[0]}&dislike=${user[1]}`)
+          .then(response => 
+          { console.log("Dislike " + response.json());      
+            window.location.reload();
+          }
+          ).catch(error =>         
+            console.log(error)
+          )
+      );
+    }
 
   render() {
     //console.log("Render user chatroom:" + JSON.stringify(this.props));
+    let bcolor = this.props.user.is_login ? "#76FF03" : "";
     return (
-      <div>
-        <Card>
+      <div >
+        <Card style={{ borderColor: bcolor }}>
           <CardImg
             className="mouseover"
             width="100%"
@@ -68,15 +100,19 @@ class RenderUser extends Component {
           <CardBody>
             <CardText className="row justify-content-center">
               <span className="col-auto">{this.props.user.username}</span>
-              {this.props.chatroom ? (
-                <span
-                  className="col-auto fa fa-comments fa-lg mouseover"
-                  onClick={e => {
-                    e.preventDefault();
-                    this.toggleChat();
-                  }}
-                />
-              ) : (<div/>)}
+              {this.props.chatroom ? (                
+                  <span
+                    className="col-auto fa fa-comments fa-lg mouseover"
+                    onClick={e => {
+                      e.preventDefault();
+                      this.toggleChat();
+                    }}                  
+                  >
+                  <span className="badge badge-danger">
+                  {this.props.uchats && this.props.uchats[this.props.chatroom] !== 0 ? this.props.uchats[this.props.chatroom] : ""}
+                  </span>  
+                </span>                
+              ) : (<a/>)}
                 {this.props.like ? (
                 <span
                 onClick={e => {
@@ -89,13 +125,13 @@ class RenderUser extends Component {
                 className="col-auto fa fa-heart fa-lg mouseover"
                 style={{ color: "#E91E63" }}
               />
-              ) : (<div/>)}              
+              ) : (<a/>)}              
                 {this.props.dislike ? (
                 <span
                   className="col-auto fa fa-close fa-lg mouseover"
                   onClick={e => {
                     e.preventDefault();
-                    this.postDislike(this.props.user.username);
+                    this.postDislike([JSON.parse(localStorage.creds).username, this.props.user.username]);
                   }}
                 />
               ) : (<a/>)}              
@@ -106,7 +142,8 @@ class RenderUser extends Component {
           <ModalHeader toggle={this.toggleModal}>Profile</ModalHeader>
           <Profile
             profile={this.props.user}
-            postFavorite={this.props.postFavorite}
+            postFavorite={this.props.postFavorite}            
+            like={this.props.like}            
           />
         </Modal>
         <Modal isOpen={this.state.isChatOpen} toggle={this.toggleChat}>
@@ -115,6 +152,7 @@ class RenderUser extends Component {
             chatId={this.props.chatroom}
             to={this.props.user.username}
             fetchUchat={this.props.fetchUchat}
+            //comments={this.state.comments}
           />
         </Modal>
       </div>
@@ -152,7 +190,7 @@ export default class Users extends Component {
   }
   render() {
     //console.log("Connected props:" + JSON.stringify(this.props.chatrooms));
-    const connectedlist = this.props.users.connected.map(user => {
+    const connectedlist = this.props.users.connected !== undefined ? this.props.users.connected.map(user => {
       return (
         <div key={user._id} className="col-9 mx-auto col-md-6 col-lg-4 my-1">
           <RenderUser
@@ -161,13 +199,14 @@ export default class Users extends Component {
             username={this.props.username}
             chatroom={this.props.chatrooms[user.username]}
             fetchUchat={this.props.fetchUchat}
+            uchats={this.props.uchats}
             like={false}
             dislike={true}
           />
         </div>
       );
-    });
-    const likedbylist = this.props.users.likedby.map(user => {
+    }) : null;
+    const likedbylist = this.props.users.likedby !== undefined ? this.props.users.likedby.map(user => {
       return (
         <div key={user._id} className="col-9 mx-auto col-md-6 col-lg-4 my-1">
           <RenderUser
@@ -179,8 +218,8 @@ export default class Users extends Component {
           />
         </div>
       );
-    });
-    const likelist = this.props.users.like.map(user => {
+    }): null;
+    const likelist = this.props.users.like !== undefined ?this.props.users.like.map(user => {
       return (
         <div key={user._id} className="col-9 mx-auto col-md-6 col-lg-4 my-1">
           <RenderUser
@@ -191,8 +230,8 @@ export default class Users extends Component {
           />
         </div>
       );
-    });
-    const checkedbylist = this.props.users.checkedby.map(user => {
+    }) : null;
+    const checkedbylist = this.props.users.checkedby !== undefined ? this.props.users.checkedby.map(user => {
       return (
         <div key={user._id} className="col-9 mx-auto col-md-6 col-lg-4 my-1">
           <RenderUser
@@ -204,7 +243,7 @@ export default class Users extends Component {
           />
         </div>
       );
-    });
+    }) : null;
 
     if (this.props.users.isLoading) {
       return (

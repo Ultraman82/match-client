@@ -11,7 +11,7 @@ import { Loading } from "./LoadingComponent";
 import { baseUrl } from "../shared/baseUrl";
 import { FadeTransform } from "react-animation-components";
 
-function RenderCard({ item, isLoading, errMess }) {
+function RenderCard({ item, isLoading, errMess }) {  
   if (isLoading) {
     return <Loading />;
   } else if (errMess) {
@@ -42,9 +42,8 @@ function Home(props) {
 
   console.log("props.location.state " + props);
   return (
-    <div className="container">
-      <div className="row align-items-start">
-        
+    <div className="container">      
+      <div className="row align-items-start">                
         <div className="col-12 col-md m-1">
           <RenderCard
             item={props.dish}

@@ -29,11 +29,11 @@ class Filter extends Component {
   //componentWillMount() {}
 
   handleSubmit(values) {
-    //console.log(JSON.stringify(values));    
+    //console.log(JSON.stringify("this.props.likelist " + this.props.likelist));    
     if (localStorage.length === 0) {
       alert("Login First");
     } else {
-      this.props.fetchUsers({ ...values, username:JSON.parse(localStorage.creds).username});
+      this.props.fetchUsers({ ...values, username:JSON.parse(localStorage.creds).username, likelist:this.props.likelist.like});
     }    
     //this.props.fetchUsers(values);
   }

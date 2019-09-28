@@ -71,6 +71,7 @@ class Chatroom extends Component {
     return fetch(baseUrl + "chat/" + this.props.chatId)
       .then(response => response.json())
       .then(response => {
+        console.log("response.comments " + response.comments);
         this.setState({ comments: response.comments });
         //console.log("Chatroom" + JSON.stringify(response.comments));
       })
@@ -80,6 +81,7 @@ class Chatroom extends Component {
   }
 
   componentWillMount() {
+    console.log("chatId" + this.props.chatId);
     this.setState({ chat: io("https://localhost:3443/chat") });
     this.getChat();
     this.readChat();
@@ -93,7 +95,6 @@ class Chatroom extends Component {
         console.log("Excute checkUchat");
         this.readChat();
       }
-
       this.getChat();
       //this.props.fetchNoties(JSON.parse(localStorage.creds).username);
     });
@@ -101,13 +102,15 @@ class Chatroom extends Component {
 
   componentWillUnmount() {
     this.state.chat.disconnect();
-    this.props.fetchUchat(localStorage.chatrooms);
+    console.log(localStorage.chatrooms.split(','));
+    this.props.fetchUchat(localStorage.chatrooms.split(','));
     //console.log("fetchUchat: " + this.props.fetchUchat);
     localStorage.inChatroom = false;
   }
 
   render() {
     const messageList = this.state.comments.map(comment => {
+      console.log("comment " + comment);
       return (
         <div key={comment.date}>
           {comment.from}, {comment.message}

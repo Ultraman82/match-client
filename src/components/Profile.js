@@ -60,14 +60,15 @@ class Profile extends Component {
     const slides = this.state.items.map(item => {
       return (
         <CarouselItem
+          className="custom-tag text-center"
           onExiting={this.onExiting}
           onExited={this.onExited}
-          key={item}
+          key={item}         
         >
           <img
             src={"https://localhost:3443/" + item}
             alt={item}
-            style={{ width: "100%", height:"300px" }}
+            style={{ width: "auto", height:"300px" }}
           />
         </CarouselItem>
       );
@@ -78,10 +79,18 @@ class Profile extends Component {
     } else{ */
     return (
       <div>
+        <style>
+          {
+            `.custom-tag {                
+                background: black;                
+              }`
+          }
+        </style>
         <Carousel
           activeIndex={activeIndex}
           next={this.next}
           previous={this.previous}
+          
         >
           {slides}
           <CarouselControl
@@ -91,7 +100,7 @@ class Profile extends Component {
           />
           <CarouselControl
             direction="next"
-            directionText="Next"
+            directionText="Next"            
             onClickHandler={this.next}
           />
         </Carousel>
@@ -105,13 +114,13 @@ class Profile extends Component {
                 Interest:
                 {Object.keys(this.props.profile.tags).map(tag => {
                   if (this.props.profile.tags[tag]) {
-                    return <div kye={tag}>{tag}</div>;
+                    return <p key={tag}>{tag}</p>;
                   }
                 })}
               </h5>
               <p>{this.props.profile.biography}</p>
-              <row className="row justify-content-center">
-                <span
+              <Row className="row justify-content-center">
+              { this.props.like === true ? <span
                   onClick={() => {
                     /* console.log(
                       "props.profile.username" + this.props.profile.username
@@ -123,9 +132,8 @@ class Profile extends Component {
                   }}
                   className="col-auto fa fa-heart fa-lg"
                   style={{ color: "#E91E63" }}
-                />
-                <span className="col-auto fa fa-close fa-lg dislike" />
-              </row>
+                /> : (<a/>)}                
+              </Row>
             </div>
           ) : (
             "egweg"

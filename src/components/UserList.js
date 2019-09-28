@@ -106,6 +106,7 @@ class RenderUser extends Component {
           <Profile
             profile={this.props.user}
             postFavorite={this.props.postFavorite}
+            like={true}
           />
         </Modal>
       </div>
@@ -183,7 +184,7 @@ const Users = props => {
   } else
     return (
       <div className="container">              
-        <Filter fetchUsers={props.fetchUsers}/>                
+        <Filter fetchUsers={props.fetchUsers} likelist={props.likelist}/>
         <div className="row">{userlist}</div>
       </div>
     );
