@@ -6,16 +6,17 @@ import {
   InputGroupAddon,
   InputGroupText
 } from "reactstrap";
+
 import { baseUrl } from "../shared/baseUrl";
 import io from "socket.io-client";
-
+import {Launcher} from 'react-chat-window'
 //const chat = io("https://localhost:3443/chat");
 
 class Chatroom extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      comments: []
+      comments: []   
     };
   }
 
@@ -109,24 +110,32 @@ class Chatroom extends Component {
   }
 
   render() {
-    const messageList = this.state.comments.map(comment => {
-      console.log("comment " + comment);
+    console.log("comment " + JSON.stringify(this.state.comments));
+    const messageList = this.state.comments.map(comment => {      
+      let sent = "sc-message--content received"
+      if (comment.to == this.props.to) {sent = "sc-message--content sent";}
       return (
-        <div key={comment.date}>
-          {comment.from}, {comment.message}
+        <div className="sc-message">
+        <div key={comment.date} className={sent}>
+          <dis className="sc-message--text">
+           {comment.message}
+          </dis>
+        </div>
         </div>
       );
     });
     return (
-      <div>
-        <ModalBody>
+      
+        <ModalBody className="sc-chat--window">
+        <div className="sc-message-list">
           {messageList}
-          chatId: {this.props.chatId}
-          <br />
+        </div>
+        <div className="sc-user-input">
           <input
             id="chatInput"
             type="text"
-            placeholder="Search..."
+            placeholder="Write message..."
+            className="sc-user-input--text"
             /* onChange={e => {
               this.setState({ message: e.target.value });
             }} */
@@ -138,9 +147,18 @@ class Chatroom extends Component {
               }
             }}
             value={this.state.message}
-          />
-        </ModalBody>
-      </div>
+            />
+            </div>
+         {/* <Launcher
+        agentProfile={{
+          teamName: 'react-chat-window',
+          imageUrl: 'https://a.slack-edge.com/66f9/img/avatars-teams/ava_0001-34.png'
+        }}
+        onMessageWasSent={this._onMessageWasSent.bind(this)}
+        messageList={this.state.messageList}
+        showEmoji
+      /> */}
+      </ModalBody>
     );
   }
 }

@@ -21,10 +21,8 @@ import {
   fetchNoties,
   checkNoti,
   fetchUchat,
-  postDislike,
-  myAction,
+  postDislike,  
 } from "../redux/ActionCreators";
-import { actions } from "react-redux-form";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 
 const mapStateToProps = state => {
@@ -51,8 +49,7 @@ const mapDispatchToProps = dispatch => ({
   postFavorite: users => dispatch(postFavorite(users)),  
   checkNoti: (notiId, date) => dispatch(checkNoti(notiId, date)),
   fetchUchat: chatIds => dispatch(fetchUchat(chatIds)),
-  postDislike: (user) => dispatch(postDislike(user)),
-  myAction: () => dispatch(myAction())
+  postDislike: (user) => dispatch(postDislike(user)),  
   // postBlacklist: user => dispatch(postBlacklist(user))
   //fetchProfile: (username) => dispatch(fetchProfile(username))
 });
@@ -60,13 +57,15 @@ const mapDispatchToProps = dispatch => ({
 class Main extends Component {
   componentWillMount() {
     //console.log("main filter props=" + JSON.stringify(this.props.filter));
-    this.props.fetchUsers(InitialFilter);
-    if (this.props.auth.user !== null) {      
-      this.props.fetchUsers({...InitialFilter, username:this.props.auth.user.username});
+    
+    if (this.props.auth.user !== null) {
       this.props.fetchInfo(this.props.auth.user.username);
-      this.props.fetchNoties(this.props.auth.user.username);
-      this.props.myAction();
+      this.props.fetchNoties(this.props.auth.user.username);      
+      //this.props.fetchUsers({...InitialFilter, username:this.props.auth.user.username});
+      //this.props.fetchUsers({...InitialFilter, username:this.props.auth.user.username});
       //this.props.fetchFavorites(this.props.auth.user.username);
+    } else {
+      this.props.fetchUsers(InitialFilter);
     }
   }
 
@@ -199,7 +198,7 @@ class Main extends Component {
             </Switch>
           </CSSTransition>
         </TransitionGroup>
-        <Footer />
+        {/* <Footer /> */}
       </div>
     );
   }

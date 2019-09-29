@@ -27,10 +27,10 @@ import { baseUrl } from "../shared/baseUrl";
     .catch(error => dispatch(usersFailed(error.message)));
 }; */
 
-export const myAction = () => (dispatch, getState) => {
+/* export const myAction = () => (dispatch, getState) => {
   const { items } = getState().info;
   console.log(items);
-};
+}; */
 
 export const fetchUsers = (filter) => dispatch => {  
   return fetch(baseUrl + "users/filtered", {
@@ -106,7 +106,7 @@ export const addUsers = users => ({
 });
 
 // Edit Info
-export const fetchInfo = username => dispatch => {
+export const fetchInfo = username => (dispatch, getState) => {
   dispatch(infoLoading(true));
   return (
     fetch(baseUrl + "users/edit/" + username)
@@ -129,10 +129,13 @@ export const fetchInfo = username => dispatch => {
       )
       .then(response => response.json())
       //.then(info => dispatch(addInfo(info)))
-      .then(info => {
-        dispatch(fetchFavorites(info));
+      .then(info => {                
+        dispatch(fetchFavorites(info));        
         dispatch(fetchUchat(Object.values(info.chatrooms)));
         dispatch(addInfo(info));
+        let filter = getState().filter;        
+        dispatch(fetchUsers({...filter, username:info.username, likelist:info.like}))
+        //console.log("getState().info " + JSON.stringify(info));
       })
       .catch(error => dispatch(infoFailed(error.message)))
   );

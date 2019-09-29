@@ -23,6 +23,7 @@ import { Link } from "react-router-dom";
 import { Loading } from "./LoadingComponent";
 import { baseUrl } from "../shared/baseUrl";
 import classnames from "classnames";
+import "./chat.css";
 
 class RenderUser extends Component {
   constructor(props) {
@@ -41,22 +42,7 @@ class RenderUser extends Component {
     this.setState({
       isModalOpen: !this.state.isModalOpen
     });
-  }
-   /* getChat() {
-    return fetch(baseUrl + "chat/" + this.props.chatId)
-      .then(response => response.json())
-      .then(response => {
-        console.log(response.comments);
-        this.setState({ comments: response.comments });        
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  }
-
-  componentDidMount() {    
-    this.getChat();      
-  } */
+  }   
 
   componentWillMount() {
     console.log("this.props.chatroom " + this.props.chatroom);
@@ -86,6 +72,8 @@ class RenderUser extends Component {
     let bcolor = this.props.user.is_login ? "#76FF03" : "";
     return (
       <div >
+        <style>
+        </style>
         <Card style={{ borderColor: bcolor }}>
           <CardImg
             className="mouseover"
@@ -147,12 +135,11 @@ class RenderUser extends Component {
           />
         </Modal>
         <Modal isOpen={this.state.isChatOpen} toggle={this.toggleChat}>
-          <ModalHeader toggle={this.toggleChat}>Chat</ModalHeader>
-          <Chatroom
+          <ModalHeader toggle={this.toggleChat} className="sc-header">Chat</ModalHeader>
+           <Chatroom
             chatId={this.props.chatroom}
             to={this.props.user.username}
-            fetchUchat={this.props.fetchUchat}
-            //comments={this.state.comments}
+            fetchUchat={this.props.fetchUchat}            
           />
         </Modal>
       </div>

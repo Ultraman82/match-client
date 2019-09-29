@@ -17,6 +17,7 @@
     "prop-types": "15.6.0",
     "react": "^16.3.2",
     "react-animation-components": "3.0.0",
+    "react-chat-window": "^1.2.1",
     "react-datetime": "2.16.3",
     "react-dom": "^16.3.2",
     "react-google-maps": "^9.4.5",
