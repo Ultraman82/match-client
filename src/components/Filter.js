@@ -1,41 +1,85 @@
 import React, { Component } from "react";
-import {
-  Button,
-  Label,
-  Col,
-  Row,
+import {  
+  Button,    
   Dropdown,
   DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
-  Modal,
-  ModalHeader
+  DropdownMenu,  
 } from "reactstrap";
-import { Control, Form, Errors } from "react-redux-form";
+import Navigation from "./navigation/Navigation";
+import "./chat.css"
+
 
 class Filter extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      dropdownOpen: false
-      /* ageS: null,
-      ageL: null,
-      fameS: null,
-      fameL: null */
+      dropdownOpen: false,
+      genre: "age",
+      genres: [{"id":1, "name":"age"}, {"id":2, "name":"distance"}, {"id":3, "name":"common tags"}, {"id":4, "name":"ratings"}],
+      age: {
+        label: "age",
+        min: 0,
+        max: 60,
+        step: 1,
+        value: { min: 20, max: 40 }
+      },
+      fame: {
+        label: "fame",
+        min: 0,
+        max: 100,
+        step: 10,
+        value: { min: 0, max: 100 }
+      },
+      distance: {
+        label: "distance",
+        min: 0,
+        max: 300,
+        step: 10,
+        value: { min: 0, max: 120 }
+      },
+      comtags: {
+        label: "comtags",
+        min: 0,
+        max: 10,
+        step: 1,
+        value: { min: 0, max: 1 }
+      },
+      sortby:"age",
+      tags:["tag1","tag2"]
     };
     this.toggle = this.toggle.bind(this);
   }
 
-  //componentWillMount() {}
+  componentWillMount() {
+    //this.setState({...this.props.fi})
+  }
 
-  handleSubmit(values) {
-    //console.log(JSON.stringify("this.props.likelist " + this.props.likelist));    
+  onGenreChange = event => {
+    this.setState({ genre: event.target.value });
+  }
+
+  setGenres = genres => {
+    this.setState({genres});
+  }
+
+  onChange = data => {
+    this.setState({
+      [data.type]: {
+        ...this.state[data.type],
+        value: data.value
+      }
+    });
+  };
+
+  handleSubmit () {
+    console.log(JSON.stringify("this.state from filter " + JSON.stringify(this.state)));    
+    this.props.fetchFilter(this.state);
+    this.toggle();    
     if (localStorage.length === 0) {
       alert("Login First");
     } else {
-      this.props.fetchUsers({ ...values, username:JSON.parse(localStorage.creds).username, likelist:this.props.likelist.like});
-    }    
-    //this.props.fetchUsers(values);
+      this.props.fetchUsers({ ...this.state, username:JSON.parse(localStorage.creds).username, likelist:this.props.likelist.like});
+    }
   }
   toggle() {
     this.setState({
@@ -43,140 +87,23 @@ class Filter extends Component {
     });
   }
 
-  render() {
+  render() {    
     return (
       <div className="container" style={{ margin: "10px" }}>
         <div className="row">
           <div className="col-12">
             <Dropdown isOpen={this.state.dropdownOpen} toggle={this.toggle}>
               <DropdownToggle color="primary">Filter / Sort</DropdownToggle>
-              <DropdownMenu>
-                <Form
-                  model="filter"
-                  onSubmit={values => this.handleSubmit(values)}                  
-                  style={{ margin: "10px" }}
-                >
-                  <Row >
-                    <Col>
-                      {/* <Control.select
-                        model=".ageL"
-                        id="ageL"
-                        name="ageL"
-                        className="form-control"
-                        >
-                        <option value="" />
-                        <option value="-3">-3</option>
-                        <option value="-5">-5</option>
-                        <option value="-10">-10</option>
-                      </Control.select> */}
-                      <Control.text
-                        model=".ageL"
-                        id="ageL"
-                        name="ageL"
-                        className="form-control"
-                      ></Control.text>
-                    </Col>
-                    
-                    <Label htmlFor="filter" >
-                    &#60; Age &#60;
-                    </Label>
-                    
-                    <Col>
-                      <Control.text
-                        model=".ageS"
-                        id="ageS"
-                        name="ageS"
-                        className="form-control"
-                      ></Control.text>
-                    </Col>
-                  </Row>
-
-                  <br />
-                  <Row>
-                    <Col >
-                      <Control.input
-                        model=".fameL"
-                        id="fameL"
-                        name="fameL"
-                        className="form-control"                        
-                      ></Control.input>
-                    </Col>
-                    <Label htmlFor="filter" >
-                      &#60; Fame &#60;
-                    </Label>
-                    <Col >
-                      <Control.input
-                        model=".fameS"
-                        id="fameS"
-                        name="fameS"
-                        className="form-control"
-                      ></Control.input>
-                    </Col>
-                  </Row>
-                  <br />
-                  <Row>                    
-                  <Col />
-                    <Label htmlFor="filter" >
-                      Distance &#60;
-                    </Label>
-                    <Col >
-                      <Control.input
-                        model=".distanceS"
-                        id="distanceS"
-                        name="distanceS"
-                        className="form-control"
-                      ></Control.input>
-                    </Col>
-                  </Row>
-                  <br />
-                  <Row>
-                  <Col />
-                  <Label htmlFor="filter" >
-                      Shared Tags &#62; 
-                    </Label>
-                    <Col >
-                      <Control.select
-                        model=".comtagS"
-                        id="comtagS"
-                        name="comtagS"
-                        className="form-control"
-                      >
-                        <option value="0">0</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                      </Control.select>
-                    </Col>
-                  </Row>
-                  <br></br>
-                  <Row>
-                  <Col />                  
-                  <Label htmlFor="filter" >
-                      Sort By
-                    </Label>
-                    <Col >
-                      <Control.select
-                        model=".sortby"
-                        id="sortby"
-                        name="sortby"
-                        className="form-control"
-                      >
-                        <option value="age">Age</option>
-                        <option value="distance">Distance</option>
-                        <option value="fame">Fame</option>
-                        <option value="tags">Comman Tags</option>
-                      </Control.select>
-                    </Col>
-                  </Row>
-                  <br></br>
-                  <Row className="form-group">
-                    <Col md={{ size: 10, offset: 4 }}>
-                      <Button type="submit" color="primary">
-                        Confirm
-                      </Button>
-                    </Col>
-                  </Row>
-                </Form>
+              <DropdownMenu>                
+              <section className="slider" style={{display:"flex"}}>
+                <Navigation 
+                  onChange={this.onChange} 
+                  onGenreChange={this.onGenreChange}          
+                  {...this.state} />
+              </section>
+                    <Button type="submit" color="primary" onClick={e => {e.preventDefault();this.handleSubmit()}}>
+                      Confirm
+                    </Button>
               </DropdownMenu>
             </Dropdown>
           </div>

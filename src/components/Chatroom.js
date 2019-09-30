@@ -9,7 +9,7 @@ import {
 
 import { baseUrl } from "../shared/baseUrl";
 import io from "socket.io-client";
-import {Launcher} from 'react-chat-window'
+//import {Launcher} from 'react-chat-window'
 //const chat = io("https://localhost:3443/chat");
 
 class Chatroom extends Component {

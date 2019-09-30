@@ -8,7 +8,7 @@ import Connected from "./Connected2";
 import { Switch, Route, Redirect, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { InitialFilter } from "../redux/forms";
-import {Alert} from "reactstrap";
+//import { actions } from 'react-redux-form';
 import {
   postFeedback,
   loginUser,
@@ -22,6 +22,7 @@ import {
   checkNoti,
   fetchUchat,
   postDislike,  
+  fetchFilter
 } from "../redux/ActionCreators";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 
@@ -50,6 +51,8 @@ const mapDispatchToProps = dispatch => ({
   checkNoti: (notiId, date) => dispatch(checkNoti(notiId, date)),
   fetchUchat: chatIds => dispatch(fetchUchat(chatIds)),
   postDislike: (user) => dispatch(postDislike(user)),  
+  fetchFilter: filter => dispatch(fetchFilter(filter)),
+
   // postBlacklist: user => dispatch(postBlacklist(user))
   //fetchProfile: (username) => dispatch(fetchProfile(username))
 });
@@ -139,6 +142,7 @@ class Main extends Component {
                     postFavorite={this.props.postFavorite}
                     //postBlacklist={this.props.postBlacklist}
                     fetchUsers={this.props.fetchUsers}                    
+                    fetchFilter={this.props.fetchFilter}
                   />
                 )}
               />
@@ -155,7 +159,7 @@ class Main extends Component {
                     postFavorite={this.props.postFavorite}
                     postDislike={this.props.postDislike}
                     fetchUchat={this.props.fetchUchat}
-                    uchats={this.props.uchats.uchats}
+                    uchats={this.props.uchats.uchats}                    
                   />
                 )}
               />

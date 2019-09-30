@@ -184,7 +184,7 @@ const Users = props => {
   } else
     return (
       <div className="container">              
-        <Filter fetchUsers={props.fetchUsers} likelist={props.likelist}/>
+        <Filter fetchUsers={props.fetchUsers} likelist={props.likelist} fetchFilter={props.fetchFilter}/>
         <div className="row">{userlist}</div>
       </div>
     );

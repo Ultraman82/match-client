@@ -1,5 +1,6 @@
 import * as ActionTypes from "./ActionTypes";
 import { baseUrl } from "../shared/baseUrl";
+import { actions } from 'react-redux-form';
 
 //users
 /* export const fetchUsers = () => dispatch => {
@@ -31,6 +32,11 @@ import { baseUrl } from "../shared/baseUrl";
   const { items } = getState().info;
   console.log(items);
 }; */
+
+export const fetchFilter = (filter) => dispatch => {  
+  dispatch(actions.change('filter', filter));
+}
+
 
 export const fetchUsers = (filter) => dispatch => {  
   return fetch(baseUrl + "users/filtered", {
@@ -134,7 +140,7 @@ export const fetchInfo = username => (dispatch, getState) => {
         dispatch(fetchUchat(Object.values(info.chatrooms)));
         dispatch(addInfo(info));
         let filter = getState().filter;        
-        dispatch(fetchUsers({...filter, username:info.username, likelist:info.like}))
+        dispatch(fetchUsers({...filter, username:info.username, likelist:info.like, gps:info.gps, tag:info.tag}))
         //console.log("getState().info " + JSON.stringify(info));
       })
       .catch(error => dispatch(infoFailed(error.message)))
