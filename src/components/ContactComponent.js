@@ -24,39 +24,36 @@ const minLength = len => val => val && val.length >= len;
 //const isNumber = val => !isNaN(Number(val));
 const validEmail = val => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(val);
 
+
+
 class Contact extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: this.props.username,
-      tags: {}
+      //username: this.props.username,
+      //tags: {},
+      hideGps: false
     };
     this.tagClick = this.tagClick.bind(this);
   }
 
-  componentWillMount() {    
-    //console.log("fetchInfo:" + this.props.fetchInfo + "\nUsername: " + this.props.username, "\nifno:" + this.props.info);
-
-    //console.log(JSON.stringify(this.props.fetchInfo(this.props.username)));
-    //console.log("aa" + aa);
-    /* if(this.props.info !== null) {
-      this.props.fetchInfo(this.props.info.username);
-    } */
+  componentWillMount() {                
     this.setState({
       ...this.props.info
     });        
   }
-  componentDidMount() {
+
+  hideGps() {    
     fetch("https://api.ipify.org?format=json")
     .then(response => response.json())
     .then(result => {    
-      console.log(result.ip);        
+      //console.log(result.ip);        
       fetch(`https://ipinfo.io/${result.ip}/json?token=1f700d00426ba7`)
       .then(result => result.json())
       .then(result => {
         let gps = result.loc.split(',');
-        this.setState({gps:{lat:gps[0], lng:gps[1]}});
-        console.log(gps);
+        this.setState({gps:{lat:gps[0], lng:gps[1]}, hideGps:true});
+        //console.log("gps from hideGps = " + gps);
     })
     .catch(error => console.log(error));
   })
@@ -71,7 +68,8 @@ class Contact extends Component {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(position => {
         this.setState({
-          gps: { lat: position.coords.latitude, lng: position.coords.longitude }
+          gps: { lat: position.coords.latitude, lng: position.coords.longitude },
+          hideGps: false
         });
       });
     } else {
@@ -92,20 +90,14 @@ class Contact extends Component {
       tags: this.state.tags,
       username: this.props.info.username,
       gps: this.state.gps
-    });
-    //this.props.resetFeedbackForm();
+    });    
   }
 
-  render() {
+  render() {    
     const Map = compose(
-      withProps({
-        /**
-         * Note: create and replace your own key in the Google console.
-         * https://console.developers.google.com/apis/dashboard
-         * The key "AIzaSyBkNaAGLEVq0YLQMi-PYEMabFeREadYe1Q" can be ONLY used in this sandbox (no forked).
-         */
+      withProps({       
         googleMapURL:
-          "https://maps.googleapis.com/maps/api/js?key=AIzaSyAJnZr_xUWJ58tDmpb11N7FtPMWgykvIJI&v=3.exp&libraries=geometry,drawing,places",
+          "https://maps.googleapis.com/maps/api/js?key=AIzaSyCf5Yaooh4vFeEznEO6S8hXkfnHCfR3XBo&v=3.exp&libraries=geometry,drawing,places",
         loadingElement: <div style={{ height: `100%` }} />,
         containerElement: <div style={{ height: `400px` }} />,
         mapElement: <div style={{ height: `100%` }} />
@@ -121,9 +113,12 @@ class Contact extends Component {
         <Marker position={this.state.gps} />
       </GoogleMap>
     ));
-    const renderTags = Object.keys(this.state.tags).map(tag => {
+
+    const renderTags = this.state.tags ? (Object.keys(this.state.tags).map(tag => {
       return (
         <Button
+          style={{margin:"5px"}}
+          key={tag}
           className="col-sm-2"
           outline
           color="primary"
@@ -135,7 +130,7 @@ class Contact extends Component {
           {tag}
         </Button>
       );
-    });
+    })) :("");
     return (
       <div className="container">
         <div className="row">
@@ -148,13 +143,21 @@ class Contact extends Component {
             <Row>
               <Label htmlFor="prefer" md={2}>
                 Location
-                <Button onClick={e => this.getCurrentLocation(e)}>
-                  Get Current location
+                <Button style={{margin:"10px"}} color="primary" size="sm" onClick={e => this.getCurrentLocation(e)}>
+                  Get location
+                </Button>
+                <Button style={{margin:"10px"}} color="primary" size="sm" onClick={() => {this.hideGps()}}>
+                  Hide Location
                 </Button>
               </Label>
-              <Col md={10}>
-                <Map />
-              </Col>
+              {
+                this.state.gps !== undefined && this.state.hideGps === false ? 
+                (<Col md={10}>                                    
+                  <Map />
+                </Col>):
+                ("")
+              }
+              
             </Row>
             <Row className="form-group">
               <Label htmlFor="firstname" md={2}>
@@ -201,30 +204,24 @@ class Contact extends Component {
                 />
               </Col>
             </Row>
-            <Row>
+            <Row className="form-group">
               <Label htmlFor="gender" md={2}>
                 Gender
               </Label>
-              <Col md={10}>
-                <label>
-                  <Control.radio
-                    model=".gender"
-                    value="male"
-                    checked={this.state.gender === "male"}
-                  />{" "}
-                  Male
-                </label>
-                <label>
-                  <Control.radio
-                    model=".gender"
-                    value="female"
-                    checked={this.state.gender === "female"}
-                  />{" "}
-                  Female
-                </label>
+              <Col md={10}>              
+              <Control.select
+                  model=".gender"
+                  id="gender"
+                  name="gender"
+                  defaultValue={this.state.gender}
+                  className="form-control"
+                >                  
+                  <option value="male">male</option>
+                  <option value="female">female</option>                 
+                </Control.select>
               </Col>
             </Row>
-            <Row>
+            <Row className="form-group">
               <Label htmlFor="prefer" md={2}>
                 Preference
               </Label>
@@ -235,8 +232,7 @@ class Contact extends Component {
                   name="prefer"
                   defaultValue={this.state.prefer}
                   className="form-control"
-                >
-                  <option value="" />
+                >                  
                   <option value="male">male</option>
                   <option value="female">female</option>
                   <option value="bi">Bi-sexual</option>
@@ -252,18 +248,18 @@ class Contact extends Component {
                     min="1970-01-01" max="2018-12-31" />
                 </Col>
               </Row> */}
-            <Row>
+            <Row className="form-group">
               <Label htmlFor="age" md={2}>
-                Day of Birth
+                Age
               </Label>
               <Col md={10}>
-                <Control.text                  
+                <Control
                   model=".age"
                   id="age"
                   name="age"
                   defaultValue={this.state.age}
                   className="form-control"
-                ></Control.text>
+                ></Control>
               </Col>
             </Row>
             <Row>
@@ -371,8 +367,8 @@ class Contact extends Component {
             </Row>
             {/* <Upload gallery={this.props.info.gallery !== [] ? this.props.info.gallery:null}/> */}
             <Upload
-              gallery={this.props.info.gallery ? this.props.info.gallery : null}
-              username={this.props.info.username}
+              gallery={this.props.info !== null? this.props.info.gallery : null}
+              username={this.props.info !== null ? this.props.info.username: ""}
             />
           </Form>
         </div>

@@ -33,7 +33,11 @@ import { actions } from 'react-redux-form';
   console.log(items);
 }; */
 
-export const fetchFilter = (filter) => dispatch => {  
+export const fetchFilter = (filter) => (dispatch, getState) => {    
+  filter.gps = getState().info.info.gps;
+  filter.username = getState().info.info.username;
+  filter.likelist = getState().info.info.like;
+  filter.tags = getState().info.info.tags;
   dispatch(actions.change('filter', filter));
 }
 
@@ -140,7 +144,7 @@ export const fetchInfo = username => (dispatch, getState) => {
         dispatch(fetchUchat(Object.values(info.chatrooms)));
         dispatch(addInfo(info));
         let filter = getState().filter;        
-        dispatch(fetchUsers({...filter, username:info.username, likelist:info.like, gps:info.gps, tag:info.tag}))
+        dispatch(fetchUsers({...filter, username:info.username, likelist:info.like, gps:info.gps, tag:info.tags}))
         //console.log("getState().info " + JSON.stringify(info));
       })
       .catch(error => dispatch(infoFailed(error.message)))

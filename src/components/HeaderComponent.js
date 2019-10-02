@@ -131,8 +131,10 @@ class Header extends Component {
         <Navbar dark expand="md">
           <div className="container">
             <NavbarToggler onClick={this.toggleNav} >
+            <span className="fa fa-list fa-lg">
               <span className="badge badge-danger">
                 {this.props.uchats + this.props.unread !== 0 ? this.props.uchats + this.props.unread : ""}
+              </span>
               </span>
             </NavbarToggler>
             <NavbarBrand className="mr-auto" href="/">

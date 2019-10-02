@@ -48,6 +48,20 @@ class RenderUser extends Component {
     }
   };
 
+  checkProfile () {
+    if(localStorage.length !== 0)
+    fetch(baseUrl + "users/add/profile", {
+      method: "POST",
+      body: JSON.stringify({
+        user:JSON.parse(localStorage.creds).username,
+        data:this.props.user.username}),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }).then(result => result.json())
+    .then(result => {console.log(result.message)});
+  }
+
   toggleModal() {
     this.setState({
       isModalOpen: !this.state.isModalOpen
@@ -65,8 +79,7 @@ class RenderUser extends Component {
           <CardImg
             className="mouseover img-responsive"            
             height="300px"            
-            overflow="hidden"
-            /* style={{maxWidth:"226px"}} */
+            overflow="hidden"            
             src={baseUrl + this.props.user.profile}
             alt={this.props.user.username}
             onClick={e => {
@@ -76,7 +89,7 @@ class RenderUser extends Component {
           />
           <CardBody>
             <CardText className="row justify-content-center">
-              <span className="col-auto">{this.props.user.username}</span>
+              <span className="col-auto">{this.props.user.username}% / {this.props.user.age}y</span>
               <span
                 onClick={e => {
                   e.preventDefault();                  
@@ -100,13 +113,14 @@ class RenderUser extends Component {
                  :(<a/>)}              
             </CardText>
           </CardBody>
-        </Card>
+        </Card>        
         <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
           <ModalHeader toggle={this.toggleModal}>Profile</ModalHeader>
           <Profile
             profile={this.props.user}
             postFavorite={this.props.postFavorite}
             like={true}
+            onClick={this.checkProfile}
           />
         </Modal>
       </div>
@@ -146,7 +160,8 @@ class RenderUser extends Component {
   );
 } */
 
-const Users = props => {      
+const Users = props => {     
+  
   const userlist = (props.users[0] === null) ? (<h1>Result has not found</h1>) :(
     props.users.map(user => { 
     if (user !== undefined && user !== null){      
@@ -184,7 +199,9 @@ const Users = props => {
   } else
     return (
       <div className="container">              
-        <Filter fetchUsers={props.fetchUsers} likelist={props.likelist} fetchFilter={props.fetchFilter}/>
+        <Filter 
+          filter={props.filter}
+          fetchUsers={props.fetchUsers} likelist={props.likelist} fetchFilter={props.fetchFilter}/>
         <div className="row">{userlist}</div>
       </div>
     );

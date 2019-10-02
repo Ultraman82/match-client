@@ -20,17 +20,16 @@ class Navigation extends React.Component {
   render() {
     const { comtags, genre, genres, onGenreChange, onChange, age, fame, distance } = this.props;
     return (
-      <section className="navigation">
+      <section className="navigation">        
+        <Slider data={age} onChange={onChange} />
+        <Slider data={fame} onChange={onChange} />
+        <Slider data={distance} onChange={onChange} /> 
+        <Slider data={comtags} onChange={onChange} /> 
         <Selection
           genre={genre}
           genres={genres}
           onGenreChange={onGenreChange}
         />
-        <Slider data={age} onChange={onChange} />
-        <Slider data={fame} onChange={onChange} />
-        <Slider data={distance} onChange={onChange} /> 
-        <Slider data={comtags} onChange={onChange} /> 
-
       </section>
     )
   }

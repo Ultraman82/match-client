@@ -63,6 +63,10 @@ address {
   overflow-y: scroll;
   padding: 15px;
 }
+.custom-tag {                                
+    background: linear-gradient(262deg, #ff7854, #fd267d);
+    border: 0;
+}            
 
 .cardImage {
   width: 200px;

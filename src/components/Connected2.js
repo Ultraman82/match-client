@@ -23,6 +23,7 @@ import { Link } from "react-router-dom";
 import { Loading } from "./LoadingComponent";
 import { baseUrl } from "../shared/baseUrl";
 import classnames from "classnames";
+import Badge from "./Badge";
 import "./chat.css";
 
 class RenderUser extends Component {
@@ -44,9 +45,9 @@ class RenderUser extends Component {
     });
   }   
 
-  componentWillMount() {
+/*   componentWillMount() {
     console.log("this.props.chatroom " + this.props.chatroom);
-  }
+  } */
 
   toggleChat() {
     this.setState({
@@ -74,10 +75,11 @@ class RenderUser extends Component {
       <div >
         <style>
         </style>
-        <Card style={{ borderColor: bcolor }}>
+        <Card style={{maxWidth:"250px"}}>
           <CardImg
-            className="mouseover"
-            width="100%"
+            className="mouseover img-responsive"            
+            height="300px"            
+            overflow="hidden"            
             src={baseUrl + this.props.user.profile}
             alt={this.props.user.username}
             onClick={e => {
@@ -96,9 +98,10 @@ class RenderUser extends Component {
                       this.toggleChat();
                     }}                  
                   >
+                  {/* <Badge uchats={this.props.uchats} uchatn={this.props.uchats[this.props.chatroom]} /> */}
                   <span className="badge badge-danger">
                   {this.props.uchats && this.props.uchats[this.props.chatroom] !== 0 ? this.props.uchats[this.props.chatroom] : ""}
-                  </span>  
+                  </span>
                 </span>                
               ) : (<a/>)}
                 {this.props.like ? (
@@ -122,7 +125,7 @@ class RenderUser extends Component {
                     this.postDislike([JSON.parse(localStorage.creds).username, this.props.user.username]);
                   }}
                 />
-              ) : (<a/>)}              
+              ) : (<a/>)}
             </CardText>
           </CardBody>
         </Card>

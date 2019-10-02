@@ -25,8 +25,21 @@ class Profile extends Component {
   }
 
   componentWillMount() {
-    this.setState({ items: this.props.profile.gallery });
-  }
+    this.setState({ items: this.props.profile.gallery });        
+
+     /* if(localStorage.length !== 0)
+      fetch(baseUrl + "users/add/profile", {
+        method: "POST",
+        body: JSON.stringify({
+          user:JSON.parse(localStorage.creds).username,
+          data:this.props.profile.username}),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }).then(result => result.json())
+      .then(result => {console.log(result.message)}); */
+    }
+  
 
   onExiting() {
     this.animating = true;
@@ -68,29 +81,24 @@ class Profile extends Component {
           <img
             src={"https://localhost:3443/" + item}
             alt={item}
-            style={{ width: "auto", height:"300px" }}
+            style={{ width: "auto", height:"300px"}}
           />
         </CarouselItem>
       );
     });
-
-    /* if (!this.props.isModalOpen) {
-      return null;
-    } else{ */
+    
     return (
-      <div>
-        <style>
-          {
-            `.custom-tag {                
-                background: black;                
-              }`
-          }
-        </style>
+      <div><style>
+      {
+        `.custom-tag {                                
+            background: linear-gradient(262deg, #ff7854, #fd267d);
+          }`
+      }
+    </style>
         <Carousel
           activeIndex={activeIndex}
           next={this.next}
           previous={this.previous}
-          
         >
           {slides}
           <CarouselControl
@@ -107,18 +115,30 @@ class Profile extends Component {
         <ModalBody>
           {this.props.profile ? (
             <div>
-              <h3>
-                {this.props.profile.firstname} {this.props.profile.lastname}
+              <header style={{ textAlign:"center" }}>
+              <h3 >
+                {this.props.profile.firstname} {this.props.profile.lastname}, {this.props.profile.age}
               </h3>
-              <h5>
-                Interest:
-                {Object.keys(this.props.profile.tags).map(tag => {
+              <h6>
+              {this.props.profile.fame}% / {this.props.profile.distance} miles
+              </h6>
+              </header>              
+              <h6 style={{display: "flex"}}>                
+                {Object.keys(this.props.profile.tags).map((tag, index) => {
                   if (this.props.profile.tags[tag]) {
-                    return <p key={tag}>{tag}</p>;
-                  }
-                })}
-              </h5>
-              <p>{this.props.profile.biography}</p>
+                    return <p style={{ 
+                      fontStyle: "italic",
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "center",
+                      width: "100%",
+                      padding: "0",
+                      listStyle: "none" }} key={index}>{tag}</p>;
+                    }
+                })
+                }
+              </h6>
+              <p style={{ textAlign:"center" }}>{this.props.profile.biography}</p>
               <Row className="row justify-content-center">
               { this.props.like === true ? <span
                   onClick={() => {
@@ -130,7 +150,7 @@ class Profile extends Component {
                       this.props.profile.username
                     ]);
                   }}
-                  className="col-auto fa fa-heart fa-lg"
+                  className="col-auto fa fa-heart fa-lg mouseover"
                   style={{ color: "#E91E63" }}
                 /> : (<a/>)}                
               </Row>

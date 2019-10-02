@@ -16,7 +16,7 @@ import {
   fetchInfo,
   registerUser,
   fetchFavorites,
-  postFavorite,  
+  postFavorite,
   fetchUsers,
   fetchNoties,
   checkNoti,
@@ -34,7 +34,8 @@ const mapStateToProps = state => {
     users: state.users,
     info: state.info,
     favorites: state.favorites,
-    auth: state.auth
+    auth: state.auth,
+    filter: state.filter
   };
 };
 
@@ -70,6 +71,9 @@ class Main extends Component {
     } else {
       this.props.fetchUsers(InitialFilter);
     }
+  }
+  componentDidMount () {
+    //console.log("filter from main " + JSON.stringify(this.props.filter));
   }
 
   render() {
@@ -115,6 +119,7 @@ class Main extends Component {
           chatrooms={
             this.props.info.info ? this.props.info.info.chatrooms : null
           }
+        
         />
         <TransitionGroup>
           <CSSTransition
@@ -143,6 +148,7 @@ class Main extends Component {
                     //postBlacklist={this.props.postBlacklist}
                     fetchUsers={this.props.fetchUsers}                    
                     fetchFilter={this.props.fetchFilter}
+                    filter={this.props.filter}
                   />
                 )}
               />

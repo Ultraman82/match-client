@@ -59,7 +59,7 @@ class Uploader extends React.Component {
 
   render() {
     let images;
-    if(this.state.images !== [] && this.state.images.length > 0) {
+    if(this.state.images !== [] && this.state.images && this.state.images.length > 0) {
       images = this.state.images.map( i => {
         return (
           <ImageCard key={this.state.images.indexOf(i)} alt={i} src={'https://localhost:3443/'+i} date={i.replace("images/edgar2",'').replace('.png', '')} />

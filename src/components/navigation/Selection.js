@@ -4,8 +4,8 @@ import React from "react";
 import "./Selection.css";
 
 const Selection = ({genre, genres, onGenreChange }) => (
-  <div className="selection">
-    <label>Genre</label>
+  <div className="selection" style={{alignItems:"center"}}>
+    <label>Sort By</label>
     <select value={genre} onChange={onGenreChange}>
       
       { genres.map( genre => (
