@@ -5,6 +5,7 @@ import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import { ConfigureStore } from "./redux/configureStore";
 import "bootstrap/dist/css/bootstrap.min.css";
+require("dotenv").config();
 
 const store = ConfigureStore();
 

@@ -1,9 +1,6 @@
 import React, { Component } from "react";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
+import {  
   Button,
-  ButtonGroup,
   Label,
   Col,
   Row
@@ -18,13 +15,14 @@ import {
   GoogleMap,
   Marker
 } from "react-google-maps";
+const path = require("path");
+require("dotenv").config();
+
 const required = val => val && val.length;
 const maxLength = len => val => !val || val.length <= len;
 const minLength = len => val => val && val.length >= len;
 //const isNumber = val => !isNaN(Number(val));
 const validEmail = val => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(val);
-
-
 
 class Contact extends Component {
   constructor(props) {
@@ -94,10 +92,11 @@ class Contact extends Component {
   }
 
   render() {    
+    console.log("process.env.MAP_API" + JSON.stringify(process.env));
     const Map = compose(
       withProps({       
         googleMapURL:
-          "https://maps.googleapis.com/maps/api/js?key=AIzaSyCf5Yaooh4vFeEznEO6S8hXkfnHCfR3XBo&v=3.exp&libraries=geometry,drawing,places",
+          `https://maps.googleapis.com/maps/api/js?key=${process.env.MAP_API}&v=3.exp&libraries=geometry,drawing,places`,
         loadingElement: <div style={{ height: `100%` }} />,
         containerElement: <div style={{ height: `400px` }} />,
         mapElement: <div style={{ height: `100%` }} />
