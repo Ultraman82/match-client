@@ -19,7 +19,7 @@ export default class Notification extends Component {
     //this.RenderProfile = this.RenderProfile.bind(this);
   }
 
-  componentDidMount() { }
+  componentDidMount() {}
 
   componentWillMount() {
     this.setState({ profile: this.props.profile });
@@ -101,7 +101,7 @@ export default class Notification extends Component {
       </div>
     );
   }
-  render() {    
+  render() {
     const noties =
       this.props.noti !== null && this.props.noti.comments.length !== 0 ? (
         this.props.noti.comments.map(noti => {
@@ -115,8 +115,10 @@ export default class Notification extends Component {
           );
         })
       ) : (
-          <h1>No notification</h1>
-        );
+        <h1 className="text-center" style={{ margin: "40px" }}>
+          No notification
+        </h1>
+      );
     return (
       <div>
         {noties}

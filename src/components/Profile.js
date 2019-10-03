@@ -25,9 +25,9 @@ class Profile extends Component {
   }
 
   componentWillMount() {
-    this.setState({ items: this.props.profile.gallery });        
+    this.setState({ items: this.props.profile.gallery });
 
-     /* if(localStorage.length !== 0)
+    /* if(localStorage.length !== 0)
       fetch(baseUrl + "users/add/profile", {
         method: "POST",
         body: JSON.stringify({
@@ -38,8 +38,7 @@ class Profile extends Component {
         }
       }).then(result => result.json())
       .then(result => {console.log(result.message)}); */
-    }
-  
+  }
 
   onExiting() {
     this.animating = true;
@@ -76,25 +75,24 @@ class Profile extends Component {
           className="custom-tag text-center"
           onExiting={this.onExiting}
           onExited={this.onExited}
-          key={item}         
+          key={item}
         >
           <img
             src={"https://localhost:3443/" + item}
             alt={item}
-            style={{ width: "auto", height:"300px"}}
+            style={{ width: "auto", height: "300px" }}
           />
         </CarouselItem>
       );
     });
-    
+
     return (
-      <div><style>
-      {
-        `.custom-tag {                                
+      <div>
+        <style>
+          {`.custom-tag {                                
             background: linear-gradient(262deg, #ff7854, #fd267d);
-          }`
-      }
-    </style>
+          }`}
+        </style>
         <Carousel
           activeIndex={activeIndex}
           next={this.next}
@@ -108,51 +106,69 @@ class Profile extends Component {
           />
           <CarouselControl
             direction="next"
-            directionText="Next"            
+            directionText="Next"
             onClickHandler={this.next}
           />
         </Carousel>
         <ModalBody>
           {this.props.profile ? (
             <div>
-              <header style={{ textAlign:"center" }}>
-              <h3 >
-                {this.props.profile.firstname} {this.props.profile.lastname}, {this.props.profile.age}
-              </h3>
-              <h6>
-              {this.props.profile.fame}% / {this.props.profile.distance} miles
-              </h6>
-              </header>              
-              <h6 style={{display: "flex"}}>                
+              <header style={{ textAlign: "center" }}>
+                <h3>
+                  {this.props.profile.firstname} {this.props.profile.lastname},{" "}
+                  {this.props.profile.age}
+                </h3>
+                <h6>
+                  {this.props.profile.fame}% / {this.props.profile.distance}{" "}
+                  miles
+                </h6>
+              </header>
+              <h6 style={{ display: "flex" }}>
                 {Object.keys(this.props.profile.tags).map((tag, index) => {
                   if (this.props.profile.tags[tag]) {
-                    return <p style={{ 
-                      fontStyle: "italic",
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "center",
-                      width: "100%",
-                      padding: "0",
-                      listStyle: "none" }} key={index}>{tag}</p>;
-                    }
-                })
-                }
+                    return (
+                      <p
+                        style={{
+                          fontStyle: "italic",
+                          display: "flex",
+                          flexDirection: "row",
+                          justifyContent: "center",
+                          width: "100%",
+                          padding: "0",
+                          listStyle: "none"
+                        }}
+                        key={index}
+                      >
+                        {tag}
+                      </p>
+                    );
+                  }
+                })}
               </h6>
-              <p style={{ textAlign:"center" }}>{this.props.profile.biography}</p>
+              <p style={{ textAlign: "center" }}>
+                {this.props.profile.biography}
+                <br />
+                <small>last login : {this.props.profile.last_login}</small>
+              </p>
+
               <Row className="row justify-content-center">
-              { this.props.like === true ? <span
-                  onClick={() => {
-                    /* console.log(
+                {this.props.like === true ? (
+                  <span
+                    onClick={() => {
+                      /* console.log(
                       "props.profile.username" + this.props.profile.username
                     ); */
-                    this.props.postFavorite([
-                      JSON.parse(localStorage.creds).username,
-                      this.props.profile.username
-                    ]);
-                  }}
-                  className="col-auto fa fa-heart fa-lg mouseover"
-                  style={{ color: "#E91E63" }}
-                /> : (<a/>)}                
+                      this.props.postFavorite([
+                        JSON.parse(localStorage.creds).username,
+                        this.props.profile.username
+                      ]);
+                    }}
+                    className="col-auto fa fa-heart fa-lg mouseover"
+                    style={{ color: "#E91E63" }}
+                  />
+                ) : (
+                  <a />
+                )}
               </Row>
             </div>
           ) : (

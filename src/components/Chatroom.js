@@ -16,7 +16,7 @@ class Chatroom extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      comments: []   
+      comments: []
     };
   }
 
@@ -63,7 +63,7 @@ class Chatroom extends Component {
       .then(response => response.json())
       .then(response => {
         //console.log("fetchProfile:" + profile);
-        console.log("Profile: " + JSON.stringify(response));
+        //console.log("Profile: " + JSON.stringify(response));
       })
       .catch(error => console.log(error.message));
   };
@@ -72,9 +72,8 @@ class Chatroom extends Component {
     return fetch(baseUrl + "chat/" + this.props.chatId)
       .then(response => response.json())
       .then(response => {
-        console.log("response.comments " + response.comments);
+        //console.log("response.comments " + response.comments);
         this.setState({ comments: response.comments });
-        //console.log("Chatroom" + JSON.stringify(response.comments));
       })
       .catch(error => {
         console.log(error);
@@ -103,33 +102,30 @@ class Chatroom extends Component {
 
   componentWillUnmount() {
     this.state.chat.disconnect();
-    console.log(localStorage.chatrooms.split(','));
-    this.props.fetchUchat(localStorage.chatrooms.split(','));
+    console.log(localStorage.chatrooms.split(","));
+    this.props.fetchUchat(localStorage.chatrooms.split(","));
     //console.log("fetchUchat: " + this.props.fetchUchat);
     localStorage.inChatroom = false;
   }
 
   render() {
-    console.log("comment " + JSON.stringify(this.state.comments));
-    const messageList = this.state.comments.map(comment => {      
-      let sent = "sc-message--content received"
-      if (comment.to == this.props.to) {sent = "sc-message--content sent";}
+    //console.log("comment " + JSON.stringify(this.state.comments));
+    const messageList = this.state.comments.map(comment => {
+      let sent = "sc-message--content received";
+      if (comment.to == this.props.to) {
+        sent = "sc-message--content sent";
+      }
       return (
-        <div className="sc-message">
-        <div key={comment.date} className={sent}>
-          <dis className="sc-message--text">
-           {comment.message}
-          </dis>
-        </div>
+        <div key={comment.date} className="sc-message">
+          <div className={sent}>
+            <div className="sc-message--text">{comment.message}</div>
+          </div>
         </div>
       );
     });
     return (
-      
-        <ModalBody className="sc-chat--window">
-        <div className="sc-message-list">
-          {messageList}
-        </div>
+      <ModalBody className="sc-chat--window">
+        <div className="sc-message-list">{messageList}</div>
         <div className="sc-user-input">
           <input
             id="chatInput"
@@ -147,9 +143,9 @@ class Chatroom extends Component {
               }
             }}
             value={this.state.message}
-            />
-            </div>
-         {/* <Launcher
+          />
+        </div>
+        {/* <Launcher
         agentProfile={{
           teamName: 'react-chat-window',
           imageUrl: 'https://a.slack-edge.com/66f9/img/avatars-teams/ava_0001-34.png'

@@ -21,7 +21,7 @@ import {
   fetchNoties,
   checkNoti,
   fetchUchat,
-  postDislike,  
+  postDislike,
   fetchFilter
 } from "../redux/ActionCreators";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
@@ -48,11 +48,11 @@ const mapDispatchToProps = dispatch => ({
   fetchNoties: username => dispatch(fetchNoties(username)),
   logoutUser: () => dispatch(logoutUser()),
   fetchFavorites: username => dispatch(fetchFavorites(username)),
-  postFavorite: users => dispatch(postFavorite(users)),  
+  postFavorite: users => dispatch(postFavorite(users)),
   checkNoti: (notiId, date) => dispatch(checkNoti(notiId, date)),
   fetchUchat: chatIds => dispatch(fetchUchat(chatIds)),
-  postDislike: (user) => dispatch(postDislike(user)),  
-  fetchFilter: filter => dispatch(fetchFilter(filter)),
+  postDislike: user => dispatch(postDislike(user)),
+  fetchFilter: filter => dispatch(fetchFilter(filter))
 
   // postBlacklist: user => dispatch(postBlacklist(user))
   //fetchProfile: (username) => dispatch(fetchProfile(username))
@@ -61,10 +61,10 @@ const mapDispatchToProps = dispatch => ({
 class Main extends Component {
   componentWillMount() {
     //console.log("main filter props=" + JSON.stringify(this.props.filter));
-    
+
     if (this.props.auth.user !== null) {
       this.props.fetchInfo(this.props.auth.user.username);
-      this.props.fetchNoties(this.props.auth.user.username);      
+      this.props.fetchNoties(this.props.auth.user.username);
       //this.props.fetchUsers({...InitialFilter, username:this.props.auth.user.username});
       //this.props.fetchUsers({...InitialFilter, username:this.props.auth.user.username});
       //this.props.fetchFavorites(this.props.auth.user.username);
@@ -72,7 +72,7 @@ class Main extends Component {
       this.props.fetchUsers(InitialFilter);
     }
   }
-  componentDidMount () {
+  componentDidMount() {
     //console.log("filter from main " + JSON.stringify(this.props.filter));
   }
 
@@ -83,19 +83,19 @@ class Main extends Component {
         render={props =>
           this.props.auth.isAuthenticated ? (
             <Component {...props} />
-          ) : (            
-          <div>
-            {alert("Please Log in first")}
-            <Redirect
-              to={{
-                pathname: "/home",
-                state: { 
-                  from: props.location
-                 }
-              }}             
-            />
-          </div>
-            )
+          ) : (
+            <div>
+              {alert("Please Log in first")}
+              <Redirect
+                to={{
+                  pathname: "/home",
+                  state: {
+                    from: props.location
+                  }
+                }}
+              />
+            </div>
+          )
         }
       />
     );
@@ -119,14 +119,13 @@ class Main extends Component {
           chatrooms={
             this.props.info.info ? this.props.info.info.chatrooms : null
           }
-        
         />
         <TransitionGroup>
           <CSSTransition
             key={this.props.location.key}
             classNames="page"
             timeout={300}
-          >            
+          >
             <Switch>
               <Route
                 exact
@@ -143,10 +142,10 @@ class Main extends Component {
                         ? this.props.info.info
                         : null
                     }
-                    users={this.props.users.users}
+                    users={this.props.users}
                     postFavorite={this.props.postFavorite}
                     //postBlacklist={this.props.postBlacklist}
-                    fetchUsers={this.props.fetchUsers}                    
+                    fetchUsers={this.props.fetchUsers}
                     fetchFilter={this.props.fetchFilter}
                     filter={this.props.filter}
                   />
@@ -159,18 +158,20 @@ class Main extends Component {
                 component={() => (
                   <Connected
                     chatrooms={
-                      this.props.info.info !== null ? this.props.info.info.chatrooms : null
+                      this.props.info.info !== null
+                        ? this.props.info.info.chatrooms
+                        : null
                     }
                     users={this.props.favorites.favorites}
                     postFavorite={this.props.postFavorite}
                     postDislike={this.props.postDislike}
                     fetchUchat={this.props.fetchUchat}
-                    uchats={this.props.uchats.uchats}                    
+                    uchats={this.props.uchats.uchats}
                   />
                 )}
               />
               {/* <Route path="/menu/:dishId" component={DishWithId} /> */}
-              <PrivateRoute 
+              <PrivateRoute
                 exact
                 path="/chat"
                 component={() => (
@@ -195,15 +196,17 @@ class Main extends Component {
                   />
                 )}
               /> */}
-              <PrivateRoute 
+              <PrivateRoute
                 exact
                 path="/contactus"
-                component={() => 
-                  <Contact                    
+                component={() => (
+                  <Contact
                     postFeedback={this.props.postFeedback}
                     fetchInfo={this.props.fetchInfo}
-                    info={this.props.info.info ? this.props.info.info : null}             
-                />} />              
+                    info={this.props.info.info ? this.props.info.info : null}
+                  />
+                )}
+              />
               <Redirect to="/home" />
             </Switch>
           </CSSTransition>
@@ -220,4 +223,3 @@ export default withRouter(
     mapDispatchToProps
   )(Main)
 );
-

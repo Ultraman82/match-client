@@ -14,7 +14,7 @@ import {
   Form,
   FormGroup,
   Input,
-  Label 
+  Label
 } from "reactstrap";
 import { NavLink } from "react-router-dom";
 import io from "socket.io-client";
@@ -77,7 +77,7 @@ class Header extends Component {
     //console.log("this.props.uchats.unread" + JSON.stringify(this.props.uchats));
   }
 
-  componentWillUnmount() { }
+  componentWillUnmount() {}
 
   toggleNav() {
     this.setState({
@@ -130,11 +130,13 @@ class Header extends Component {
         {/* <Navbar dark expand="md"> */}
         <Navbar dark expand="md">
           <div className="container">
-            <NavbarToggler onClick={this.toggleNav} >
-            <span className="fa fa-list fa-lg">
-              <span className="badge badge-danger">
-                {this.props.uchats + this.props.unread !== 0 ? this.props.uchats + this.props.unread : ""}
-              </span>
+            <NavbarToggler onClick={this.toggleNav}>
+              <span className="fa fa-list fa-lg">
+                <span className="badge badge-danger">
+                  {this.props.uchats + this.props.unread !== 0
+                    ? this.props.uchats + this.props.unread
+                    : ""}
+                </span>
               </span>
             </NavbarToggler>
             <NavbarBrand className="mr-auto" href="/">
@@ -149,11 +151,6 @@ class Header extends Component {
               <Nav navbar>
                 <NavItem>
                   <NavLink className="nav-link" to="/home">
-                    <span className="fa fa-home fa-lg" /> Home
-                  </NavLink>
-                </NavItem>
-                <NavItem>
-                  <NavLink className="nav-link" to="/aboutus">
                     <span className="fa fa-list fa-lg" /> User List
                   </NavLink>
                 </NavItem>
@@ -197,18 +194,18 @@ class Header extends Component {
                       </Button>
                     </div>
                   ) : (
-                      <div>
-                        <div className="navbar-text mr-3">
-                          {this.props.auth.user.username}
-                        </div>
-                        <Button outline onClick={this.handleLogout}>
-                          <span className="fa fa-sign-out fa-lg" /> Logout
-                        {this.props.auth.isFetching ? (
-                            <span className="fa fa-spinner fa-pulse fa-fw" />
-                          ) : null}
-                        </Button>
+                    <div>
+                      <div className="navbar-text mr-3">
+                        {this.props.auth.user.username}
                       </div>
-                    )}
+                      <Button outline onClick={this.handleLogout}>
+                        <span className="fa fa-sign-out fa-lg" /> Logout
+                        {this.props.auth.isFetching ? (
+                          <span className="fa fa-spinner fa-pulse fa-fw" />
+                        ) : null}
+                      </Button>
+                    </div>
+                  )}
                 </NavItem>
               </Nav>
             </Collapse>

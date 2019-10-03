@@ -1,6 +1,7 @@
 import * as ActionTypes from "./ActionTypes";
 import { baseUrl } from "../shared/baseUrl";
-import { actions } from 'react-redux-form';
+import { actions } from "react-redux-form";
+import { get } from "http";
 
 //users
 /* export const fetchUsers = () => dispatch => {
@@ -33,16 +34,17 @@ import { actions } from 'react-redux-form';
   console.log(items);
 }; */
 
-export const fetchFilter = (filter) => (dispatch, getState) => {    
+export const fetchFilter = filter => (dispatch, getState) => {
+  filter.prefer = getState().info.info.prefer;
   filter.gps = getState().info.info.gps;
   filter.username = getState().info.info.username;
   filter.likelist = getState().info.info.like;
   filter.tags = getState().info.info.tags;
-  dispatch(actions.change('filter', filter));
-}
+  dispatch(actions.change("filter", filter));
+};
 
-
-export const fetchUsers = (filter) => dispatch => {  
+export const fetchUsers = filter => dispatch => {
+  dispatch(usersLoading(true));
   return fetch(baseUrl + "users/filtered", {
     method: "POST",
     body: JSON.stringify(filter),
@@ -69,12 +71,11 @@ export const fetchUsers = (filter) => dispatch => {
       }
     )
     .then(response => response.json())
-    .then(users => {      
+    .then(users => {
       dispatch(addUsers(users));
     })
     .catch(error => dispatch(usersFailed(error.message)));
 };
-
 
 /* export const fetchUsers = () => dispatch => {
   dispatch(usersLoading(true));  
@@ -139,12 +140,21 @@ export const fetchInfo = username => (dispatch, getState) => {
       )
       .then(response => response.json())
       //.then(info => dispatch(addInfo(info)))
-      .then(info => {                
-        dispatch(fetchFavorites(info));        
+      .then(info => {
+        dispatch(fetchFavorites(info));
         dispatch(fetchUchat(Object.values(info.chatrooms)));
         dispatch(addInfo(info));
-        let filter = getState().filter;        
-        dispatch(fetchUsers({...filter, username:info.username, likelist:info.like, gps:info.gps, tag:info.tags}))
+        let filter = getState().filter;
+        dispatch(
+          fetchUsers({
+            ...filter,
+            username: info.username,
+            likelist: info.like,
+            gps: info.gps,
+            tag: info.tags,
+            prefer: info.prefer
+          })
+        );
         //console.log("getState().info " + JSON.stringify(info));
       })
       .catch(error => dispatch(infoFailed(error.message)))
@@ -195,7 +205,7 @@ export const postFeedback = feedback => dispatch => {
     .then(response => response.json())
     .then(response => {
       console.log("Feedback", response);
-      alert("Thank you for your feedback!\n" + JSON.stringify(response));      
+      alert("Thank you for your feedback!\n" + JSON.stringify(response));
       dispatch(addInfo(response));
       window.location.href = "localhost:3001/home";
     })
@@ -278,7 +288,7 @@ export const loginUser = creds => dispatch => {
     })
     .catch(error => {
       alert(error.message);
-      dispatch(loginError(error.message))
+      dispatch(loginError(error.message));
     });
 };
 
@@ -350,85 +360,80 @@ export const receiveLogout = () => {
 };
 
 // Logs the user out
-export const logoutUser = () => dispatch => {  
-  return (
-    fetch(baseUrl + `users/logout?username=${JSON.parse(localStorage.creds).username}`)
-      .then(
-        response => {
-          if (response.ok) {
-            return response;
-          } else {
-            var error = new Error(
-              "Error " + response.status + ": " + response.statusText
-            );
-            error.response = response;
-            throw error;
-          }
-        },
-        error => {
-          var errmess = new Error(error.message);
-          throw errmess;
+export const logoutUser = () => dispatch => {
+  return fetch(
+    baseUrl + `users/logout?username=${JSON.parse(localStorage.creds).username}`
+  )
+    .then(
+      response => {
+        if (response.ok) {
+          return response;
+        } else {
+          var error = new Error(
+            "Error " + response.status + ": " + response.statusText
+          );
+          error.response = response;
+          throw error;
         }
-      )
-      .then(response => response.json())        
-      .then(info => {
-        dispatch(requestLogout());  
-        localStorage.clear();        
-        //dispatch(favoritesFailed("Error 401: Unauthorized"));
-        dispatch(receiveLogout());          
-        window.location.reload();
-      })
-      .catch(error => console.log(error)) 
-  );
-  
-  //window.location.href = "localhost:3001/home";
-  };
+      },
+      error => {
+        var errmess = new Error(error.message);
+        throw errmess;
+      }
+    )
+    .then(response => response.json())
+    .then(info => {
+      dispatch(requestLogout());
+      localStorage.clear();
+      //dispatch(favoritesFailed("Error 401: Unauthorized"));
+      dispatch(receiveLogout());
+      window.location.reload();
+    })
+    .catch(error => console.log(error));
 
-export const postFavorite = users => dispatch => {      
+  //window.location.href = "localhost:3001/home";
+};
+
+export const postFavorite = users => dispatch => {
   if (!localStorage.creds) {
     alert("You need to log on first");
-  } else{
-    //dispatch(favoritesLoading(true));    
-    return (    
-      fetch(baseUrl + "users/add/like", {
-        method: "POST",
-        body: JSON.stringify({ user: users[0], data: users[1] }),
-        headers: {
-          "Content-Type": "application/json"
-          //Authorization: bearer
-        }
-        //credentials: "same-origin"
-      })        
-        .then(response => response.json())
-        .then(response => {
-          alert(
-            `We sent message to ${users[1]}. Lets see you would be liked!`
-          );          
+  } else {
+    //dispatch(favoritesLoading(true));
+    return fetch(baseUrl + "users/add/like", {
+      method: "POST",
+      body: JSON.stringify({ user: users[0], data: users[1] }),
+      headers: {
+        "Content-Type": "application/json"
+        //Authorization: bearer
+      }
+      //credentials: "same-origin"
+    })
+      .then(response => response.json())
+      .then(response => {
+        if (response.message === "Already Liked") {
+          alert(`You already liked  ${users[1]}.`);
+        } else {
+          alert(`We sent message to ${users[1]}. Lets see you would be liked!`);
           window.location.reload();
-        })
-        .catch(error => {
-          //dispatch(favoritesFailed(error.message));
-          console.log(error);
-        })
-    );
+        }
+      })
+      .catch(error => {
+        //dispatch(favoritesFailed(error.message));
+        console.log(error);
+      });
   }
 };
 
-export const postDislike = user => {      
+export const postDislike = user => {
   //dispatch(favoritesLoading(true));
-    return (    
-      fetch(baseUrl + `users/add/dislike?user=${user[0]}&dislike=${user[1]}`)
-        .then(response => response.json())
-        .then(response => {
-          console.log("Dislike ", user);      
-          window.location.reload();          
-        })
-        .catch(error =>         
-          console.log(error)
-        )
-    );
-  }
-
+  return fetch(baseUrl + `users/add/dislike?user=${user[0]}&dislike=${user[1]}`)
+    .then(response => response.json())
+    .then(response => {
+      console.log("Dislike ", user);
+      window.location.reload();
+    })
+    .catch(error => console.log(error));
+};
 
 export const fetchFavorites = info => dispatch => {
   dispatch(favoritesLoading(true));
@@ -462,7 +467,7 @@ export const fetchFavorites = info => dispatch => {
       }
     )
     .then(response => response.json())
-    .then(lusers => {      
+    .then(lusers => {
       dispatch(addFavorites(lusers));
     })
     .catch(error => dispatch(favoritesFailed(error.message)));
