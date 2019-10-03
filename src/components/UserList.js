@@ -89,7 +89,7 @@ class RenderUser extends Component {
           <CardBody>
             <CardText className="row justify-content-center">
               <span className="col-auto">
-                {this.props.user.fame}% / {this.props.user.age}y
+                {this.props.user.username}% / {this.props.user.age}y
               </span>
               <span
                 onClick={e => {

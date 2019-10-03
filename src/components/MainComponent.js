@@ -3,8 +3,8 @@ import User from "./UserList";
 import Contact from "./ContactComponent";
 import Notification from "./Notification";
 import Header from "./HeaderComponent";
-import Footer from "./FooterComponent";
-import Connected from "./Connected2";
+
+import Connected from "./Connected";
 import { Switch, Route, Redirect, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { InitialFilter } from "../redux/forms";

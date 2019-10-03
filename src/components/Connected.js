@@ -23,7 +23,6 @@ import { Link } from "react-router-dom";
 import { Loading } from "./LoadingComponent";
 import { baseUrl } from "../shared/baseUrl";
 import classnames from "classnames";
-import Badge from "./Badge";
 import "./chat.css";
 
 class RenderUser extends Component {

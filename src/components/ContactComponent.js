@@ -144,24 +144,6 @@ class Contact extends Component {
             <Row>
               <Label htmlFor="prefer" md={2}>
                 Location
-                <Button
-                  style={{ margin: "10px" }}
-                  color="primary"
-                  size="sm"
-                  onClick={e => this.getCurrentLocation(e)}
-                >
-                  Get location
-                </Button>
-                <Button
-                  style={{ margin: "10px" }}
-                  color="primary"
-                  size="sm"
-                  onClick={() => {
-                    this.hideGps();
-                  }}
-                >
-                  Hide Location
-                </Button>
               </Label>
               {this.state.gps !== undefined && this.state.hideGps === false ? (
                 <Col md={10}>
@@ -170,6 +152,28 @@ class Contact extends Component {
               ) : (
                 ""
               )}
+              <Col md={{ size: 10, offset: 2 }}>
+                <Button
+                  style={{ margin: "10px" }}
+                  color="primary"
+                  size="lg"
+                  block
+                  onClick={e => this.getCurrentLocation(e)}
+                >
+                  Get location
+                </Button>
+                <Button
+                  style={{ margin: "10px" }}
+                  color="primary"
+                  size="lg"
+                  block
+                  onClick={() => {
+                    this.hideGps();
+                  }}
+                >
+                  Hide Location
+                </Button>
+              </Col>
             </Row>
             <Row className="form-group">
               <Label htmlFor="firstname" md={2}>
