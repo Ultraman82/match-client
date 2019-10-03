@@ -77,6 +77,7 @@ class RenderUser extends Component {
             className="mouseover img-responsive"
             height="300px"
             overflow="hidden"
+            style={{ objectFit: "cover" }}
             src={baseUrl + this.props.user.profile}
             alt={this.props.user.username}
             onClick={e => {
@@ -96,7 +97,10 @@ class RenderUser extends Component {
                   }}
                 >
                   {/* <Badge uchats={this.props.uchats} uchatn={this.props.uchats[this.props.chatroom]} /> */}
-                  <span className="badge badge-danger">
+                  <span
+                    className="badge badge-pill badge-danger"
+                    style={{ height: "21px" }}
+                  >
                     {this.props.uchats &&
                     this.props.uchats[this.props.chatroom] !== 0
                       ? this.props.uchats[this.props.chatroom]
@@ -349,3 +353,7 @@ export default class Users extends Component {
       );
   }
 }
+/* {this.props.uchats &&
+  this.props.uchats[this.props.chatroom] !== 0
+    ? this.props.uchats[this.props.chatroom]
+    : ""} */

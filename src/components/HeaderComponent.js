@@ -131,13 +131,13 @@ class Header extends Component {
         <Navbar dark expand="md">
           <div className="container">
             <NavbarToggler onClick={this.toggleNav}>
-              <span className="fa fa-list fa-lg">
+              {/* <span className="fa fa-list fa-lg">
                 <span className="badge badge-danger">
                   {this.props.uchats + this.props.unread !== 0
                     ? this.props.uchats + this.props.unread
                     : ""}
                 </span>
-              </span>
+              </span> */}
             </NavbarToggler>
             <NavbarBrand className="mr-auto" href="/">
               <img
@@ -146,14 +146,10 @@ class Header extends Component {
                 width="41"
                 alt="Ristorante Con Fusion"
               />
+              <NavLink className="nav-link" to="/home"></NavLink>
             </NavbarBrand>
             <Collapse isOpen={this.state.isNavOpen} navbar>
               <Nav navbar>
-                <NavItem>
-                  <NavLink className="nav-link" to="/home">
-                    <span className="fa fa-list fa-lg" /> User List
-                  </NavLink>
-                </NavItem>
                 <NavItem>
                   <NavLink className="nav-link" to="/menu">
                     <span className="fa fa-heart fa-lg" /> Connected
@@ -180,13 +176,29 @@ class Header extends Component {
                 <NavItem>
                   {!this.props.auth.isAuthenticated ? (
                     <div>
-                      <Button outline onClick={this.toggleModal}>
+                      <Button
+                        outline
+                        onClick={this.toggleModal}
+                        style={{
+                          margin: "10px",
+                          color: "#ffc107",
+                          borderColor: "transparent"
+                        }}
+                      >
                         <span className="fa fa-sign-in fa-lg" /> Login
                         {this.props.auth.isFetching ? (
                           <span className="fa fa-spinner fa-pulse fa-fw" />
                         ) : null}
                       </Button>
-                      <Button outline onClick={this.toggleSignup}>
+                      <Button
+                        outline
+                        onClick={this.toggleSignup}
+                        style={{
+                          margin: "10px",
+                          color: "#ffc107",
+                          borderColor: "transparent"
+                        }}
+                      >
                         <span className="fa fa-sign-in fa-lg" /> Signup
                         {this.props.auth.isFetching ? (
                           <span className="fa fa-spinner fa-pulse fa-fw" />
@@ -211,12 +223,19 @@ class Header extends Component {
             </Collapse>
           </div>
         </Navbar>
-        <Jumbotron>
+
+        <Jumbotron className="d-none d-md-block">
           <div className="container">
             <div className="row row-header">
               <div className="col-12 col-sm-6">
-                <h1>42 Match</h1>
-                <p>Wanna Have Fun?!</p>
+                <NavLink
+                  className="nav-link"
+                  to="/home"
+                  style={{ color: "floralwhite" }}
+                >
+                  <h1>42 Match</h1>
+                  <p>Wanna Have Fun?!</p>
+                </NavLink>
               </div>
             </div>
           </div>

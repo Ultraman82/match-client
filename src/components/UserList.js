@@ -75,6 +75,7 @@ class RenderUser extends Component {
         <Card style={{ maxWidth: "250px" }}>
           <CardImg
             className="mouseover img-responsive"
+            style={{ objectFit: "cover" }}
             height="300px"
             overflow="hidden"
             src={baseUrl + this.props.user.profile}
@@ -88,7 +89,7 @@ class RenderUser extends Component {
           <CardBody>
             <CardText className="row justify-content-center">
               <span className="col-auto">
-                {this.props.user.username}% / {this.props.user.age}y
+                {this.props.user.fame}% / {this.props.user.age}y
               </span>
               <span
                 onClick={e => {
