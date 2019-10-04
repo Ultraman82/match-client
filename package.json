@@ -1,6 +1,7 @@
 {
   "name": "confusion",
   "version": "0.1.0",
+  "homepage": "https://Ultraman82.github.io//match-client",
   "private": true,
   "dependencies": {
     "bootstrap": "^4.3.1",
@@ -9,6 +10,7 @@
     "cross-fetch": "2.1.0",
     "dotenv": "^8.1.0",
     "font-awesome": "4.7.0",
+    "gh-pages": "^2.1.1",
     "jquery": "^3.4.1",
     "nouislider": "13.1.5",
     "ol": "^5.3.3",
@@ -34,6 +36,7 @@
     "socket.io-client": "^2.2.0"
   },
   "scripts": {
+    "deploy": "gh-pages -d deploy",
     "start": "react-scripts start ",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
