@@ -1,7 +1,6 @@
 import * as ActionTypes from "./ActionTypes";
 import { baseUrl } from "../shared/baseUrl";
 import { actions } from "react-redux-form";
-import { get } from "http";
 
 //users
 /* export const fetchUsers = () => dispatch => {
@@ -550,7 +549,7 @@ export const fetchNoties = notiId => dispatch => {
       //console.log("fetchNoti response:" + JSON.stringify(noties));
       {
         let unread = 0;
-        noties["comments"].map(noti => {
+        noties["comments"].forEach(noti => {
           if (noti["unread"]) unread += 1;
         });
         noties["unread"] = unread;

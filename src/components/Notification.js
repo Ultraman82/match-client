@@ -3,9 +3,6 @@ import { Media, Modal, ModalHeader } from "reactstrap";
 import Profile from "./Profile";
 import { baseUrl } from "../shared/baseUrl";
 
-/* import io from "socket.io-client";
-const noti = io(baseUrl + "noti"); */
-
 export default class Notification extends Component {
   constructor(props) {
     super(props);

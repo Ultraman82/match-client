@@ -9,7 +9,6 @@ import {
   GoogleMap,
   Marker
 } from "react-google-maps";
-const path = require("path");
 require("dotenv").config();
 
 const required = val => val && val.length;

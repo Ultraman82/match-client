@@ -1,11 +1,5 @@
 import React, { Component } from "react";
-import {
-  ModalBody,
-  Input,
-  InputGroup,
-  InputGroupAddon,
-  InputGroupText
-} from "reactstrap";
+import { ModalBody } from "reactstrap";
 
 import { baseUrl } from "../shared/baseUrl";
 import io from "socket.io-client";
@@ -112,7 +106,7 @@ class Chatroom extends Component {
     //console.log("comment " + JSON.stringify(this.state.comments));
     const messageList = this.state.comments.map(comment => {
       let sent = "sc-message--content received";
-      if (comment.to == this.props.to) {
+      if (comment.to === this.props.to) {
         sent = "sc-message--content sent";
       }
       return (

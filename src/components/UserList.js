@@ -4,17 +4,11 @@ import Filter from "./Filter";
 import {
   Card,
   CardImg,
-  CardImgOverlay,
-  CardTitle,
   CardBody,
-  CardSubtitle,
   CardText,
-  Button,
-  CardHeader,
   Modal,
   ModalHeader
 } from "reactstrap";
-import { Link } from "react-router-dom";
 import { Loading } from "./LoadingComponent";
 import { baseUrl } from "../shared/baseUrl";
 
@@ -121,7 +115,7 @@ class RenderUser extends Component {
                   }}
                 />
               ) : (
-                <a />
+                ""
               )}
             </CardText>
           </CardBody>
@@ -194,6 +188,8 @@ const Users = props => {
               />
             </div>
           );
+        } else {
+          return "";
         }
       })
     );

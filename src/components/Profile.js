@@ -3,11 +3,7 @@ import {
   Carousel,
   CarouselItem,
   CarouselControl,
-  Modal,
   ModalBody,
-  ModalHeader,
-  CarouselIndicators,
-  CarouselCaption,
   Row
 } from "reactstrap";
 import { baseUrl } from "../shared/baseUrl";
@@ -142,6 +138,8 @@ class Profile extends Component {
                         {tag}
                       </p>
                     );
+                  } else {
+                    return "";
                   }
                 })}
               </h6>
@@ -167,7 +165,7 @@ class Profile extends Component {
                     style={{ color: "#E91E63" }}
                   />
                 ) : (
-                  <a />
+                  ""
                 )}
               </Row>
             </div>

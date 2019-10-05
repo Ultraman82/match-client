@@ -4,13 +4,8 @@ import Chatroom from "./Chatroom";
 import {
   Card,
   CardImg,
-  CardImgOverlay,
-  CardTitle,
   CardBody,
-  CardSubtitle,
   CardText,
-  Button,
-  CardHeader,
   Modal,
   ModalHeader,
   TabContent,
@@ -19,7 +14,6 @@ import {
   NavItem,
   NavLink
 } from "reactstrap";
-import { Link } from "react-router-dom";
 import { Loading } from "./LoadingComponent";
 import { baseUrl } from "../shared/baseUrl";
 import classnames from "classnames";
@@ -107,7 +101,7 @@ class RenderUser extends Component {
                   </span>
                 </span>
               ) : (
-                <a />
+                ""
               )}
               {this.props.like ? (
                 <span
@@ -122,7 +116,7 @@ class RenderUser extends Component {
                   style={{ color: "#E91E63" }}
                 />
               ) : (
-                <a />
+                ""
               )}
               {this.props.dislike ? (
                 <span
@@ -136,7 +130,7 @@ class RenderUser extends Component {
                   }}
                 />
               ) : (
-                <a />
+                ""
               )}
             </CardText>
           </CardBody>
