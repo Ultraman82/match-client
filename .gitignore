@@ -7,7 +7,7 @@
 /coverage
 
 # production
-
+.gitignore
 
 # misc
 .DS_Store
