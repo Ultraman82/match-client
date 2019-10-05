@@ -90,7 +90,7 @@ class Contact extends Component {
   render() {
     const Map = compose(
       withProps({
-        googleMapURL: `https://maps.googleapis.com/maps/api/js?key=AIzaSyCf5Yaooh4vFeEznEO6S8hXkfnHCfR3XBo&v=3.exp&libraries=geometry,drawing,places`,
+        googleMapURL: `https://maps.googleapis.com/maps/api/js?key=${process.env.MAP_API}&v=3.exp&libraries=geometry,drawing,places`,
         loadingElement: <div style={{ height: `100%` }} />,
         containerElement: <div style={{ height: `400px` }} />,
         mapElement: <div style={{ height: `100%` }} />
