@@ -1,12 +1,10 @@
 import React, { Component } from "react";
-import { Media, Button, Modal, ModalBody, ModalHeader } from "reactstrap";
+import { Media, Modal, ModalHeader } from "reactstrap";
 import Profile from "./Profile";
-
-//import { Link } from 'react-router-dom';
 import { baseUrl } from "../shared/baseUrl";
-//import { Loading } from './LoadingComponent';
-import io from "socket.io-client";
-const noti = io("https://localhost:3443/noti");
+
+/* import io from "socket.io-client";
+const noti = io(baseUrl + "noti"); */
 
 export default class Notification extends Component {
   constructor(props) {

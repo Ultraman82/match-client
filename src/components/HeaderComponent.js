@@ -18,8 +18,9 @@ import {
 } from "reactstrap";
 import { NavLink } from "react-router-dom";
 import io from "socket.io-client";
-const noti = io("https://localhost:3443/noti");
-const chatnoti = io("https://localhost:3443/chatnoti");
+import { baseUrl } from "../shared/baseUrl";
+const noti = io(baseUrl + "noti");
+const chatnoti = io(baseUrl + "chatnoti");
 
 class Header extends Component {
   constructor(props) {

@@ -78,7 +78,7 @@ class Profile extends Component {
           key={item}
         >
           <img
-            src={"https://localhost:3443/" + item}
+            src={baseUrl + item}
             alt={item}
             style={{ width: "auto", height: "300px" }}
           />

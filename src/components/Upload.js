@@ -1,11 +1,12 @@
-import React from 'react';
-import ImageCard from './ImageCard';
+import React from "react";
+import ImageCard from "./ImageCard";
+import { baseUrl } from "../shared/baseUrl";
 
 class Uploader extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state ={
+    this.state = {
       profile: null,
       gallery: [],
       images: null
@@ -16,53 +17,62 @@ class Uploader extends React.Component {
     this.onChangeGallery = this.onChangeGallery.bind(this);
   }
 
-  componentWillMount() {    
-    this.setState({images:this.props.gallery});    
+  componentWillMount() {
+    this.setState({ images: this.props.gallery });
     console.log(JSON.stringify(this.props));
   }
-  
+
   onFormSubmit(e) {
     e.preventDefault();
     this.fileUpload();
   }
 
-  onChangeProfile(e) {        
-    this.setState({profile:e.target.files[0]});
+  onChangeProfile(e) {
+    this.setState({ profile: e.target.files[0] });
     console.log(e.target.files[0]);
     e.preventDefault();
   }
   onChangeGallery(e) {
-    this.setState({gallery:e.target.files});    
+    this.setState({ gallery: e.target.files });
     console.log(this.state);
     e.preventDefault();
   }
 
-  fileUpload(){
-    let data = new FormData();       
-    for(var x = 0; x<this.state.gallery.length; x++) {
-      data.append('gallery', this.state.gallery[x]);
+  fileUpload() {
+    let data = new FormData();
+    for (var x = 0; x < this.state.gallery.length; x++) {
+      data.append("gallery", this.state.gallery[x]);
     }
     //data.append('gallery', this.state.gallery);
-    data.append('profile', this.state.profile);
-    data.append('username', this.props.username);
+    data.append("profile", this.state.profile);
+    data.append("username", this.props.username);
     console.log(this.state);
-    const url = 'https://localhost:3443/image';
+    const url = baseUrl + "image";
 
     fetch(url, {
-        mode: 'no-cors',
-        method: "POST",
-        body: data
-      })
-    .then(res => console.log(JSON.stringify(res)))
-    .then(() => window.location.href = 'localhost:3001/home');
+      mode: "no-cors",
+      method: "POST",
+      body: data
+    })
+      .then(res => console.log(JSON.stringify(res)))
+      .then(() => (window.location.href = "localhost:3001/home"));
   }
 
   render() {
     let images;
-    if(this.state.images !== [] && this.state.images && this.state.images.length > 0) {
-      images = this.state.images.map( i => {
+    if (
+      this.state.images !== [] &&
+      this.state.images &&
+      this.state.images.length > 0
+    ) {
+      images = this.state.images.map(i => {
         return (
-          <ImageCard key={this.state.images.indexOf(i)} alt={i} src={'https://localhost:3443/'+i} date={i.replace("images/edgar2",'').replace('.png', '')} />
+          <ImageCard
+            key={this.state.images.indexOf(i)}
+            alt={i}
+            src={baseUrl + i}
+            date={i.replace("images/edgar2", "").replace(".png", "")}
+          />
         );
       });
     } else {
@@ -75,14 +85,25 @@ class Uploader extends React.Component {
           <h1 className="title">Photo Gallery</h1>
           <div className="file is-info has-name is-fullwidth">
             <label className="file-label">
-              <input className="file-input" type="file" name="profile" onChange={this.onChangeProfile} />Profile              
-              <input className="file-input" type="file" name="gallery" multiple onChange={this.onChangeGallery} />Gallery
-              <span>
-                
-              </span>
+              <input
+                className="file-input"
+                type="file"
+                name="profile"
+                onChange={this.onChangeProfile}
+              />
+              Profile
+              <input
+                className="file-input"
+                type="file"
+                name="gallery"
+                multiple
+                onChange={this.onChangeGallery}
+              />
+              Gallery
+              <span></span>
             </label>
           </div>
-          <br/>
+          <br />
           {/* <div className="file is-info has-name is-fullwidth">
             <label className="file-label">
               <input className="file-input" type="file" name="gallery" multiple onChange={this.onChangeGallery} />
@@ -100,17 +121,21 @@ class Uploader extends React.Component {
             </label>
           </div>
           <br/> */}
-          <button className="button is-primary" onClick={this.onFormSubmit} type="submit">Upload</button>
+          <button
+            className="button is-primary"
+            onClick={this.onFormSubmit}
+            type="submit"
+          >
+            Upload
+          </button>
         </div>
-        <hr/>
+        <hr />
         <div className="container is-fluid">
-          <div className="columns is-multiline">
-            {images}
-          </div>
+          <div className="columns is-multiline">{images}</div>
         </div>
       </section>
     );
   }
- }
+}
 
 export default Uploader;

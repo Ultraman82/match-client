@@ -82,7 +82,7 @@ class Chatroom extends Component {
 
   componentWillMount() {
     console.log("chatId" + this.props.chatId);
-    this.setState({ chat: io("https://localhost:3443/chat") });
+    this.setState({ chat: io(baseUrl + "chat") });
     this.getChat();
     this.readChat();
     localStorage.inChatroom = true;
