@@ -145,7 +145,7 @@ class Header extends Component {
                 src="assets/images/logo.png"
                 height="30"
                 width="41"
-                alt="Ristorante Con Fusion"
+                alt="Match"
               />
               <NavLink className="nav-link" to="/home"></NavLink>
             </NavbarBrand>
