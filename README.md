@@ -12,11 +12,11 @@ Create a dating WebSite where the user can create his/her profile, search other 
 
 ### Features
 
-- Inscription and connexion
 - User profile
-- User experience
 - Research and filter users
 - Real time chat/notification with web socket
+- Report fake users
+- Hide / Register user location
 
 ### Frameworks
 
