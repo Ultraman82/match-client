@@ -50,6 +50,6 @@ Create a dating WebSite where the user can create his/her profile, search other 
 
 ### Responsive
 
-![alt tag](images/responsive.png)
+![alt tag](images/reponsive.png)
 <br/>
 ![alt tag](images/collapse.png)
