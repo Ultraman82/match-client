@@ -47,3 +47,9 @@ Create a dating WebSite where the user can create his/her profile, search other 
 ### Profile parameters
 
 ![alt tag](images/edit.png)
+
+### Responsive
+
+![alt tag](images/responsive.png)
+<br/>
+![alt tag](images/collapse.png)
